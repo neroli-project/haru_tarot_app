@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ワークサポート・タロット鑑定アプリ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Zen+Maru+Gothic:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        .title-font {
+            font-family: 'Cinzel', serif;
+        }
+        .tarot-card {
+            perspective: 1000px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tarot-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.8);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease forwards;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-full">
+
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-purple-500/30 sticky top-0 z-50 px-4 py-3 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-purple-500/40">
+                    <i class="fa-solid fa-moon text-amber-300 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold title-font tracking-wider bg-gradient-to-r from-purple-300 via-pink-300 to-amber-200 bg-clip-text text-transparent">Work Support Tarot</h1>
+                    <p class="text-xs text-purple-300">78枚フル対応 ・ ワークサポート鑑定</p>
+                </div>
+            </div>
+            
+            <!-- Spread Selector Tabs -->
+            <div class="flex flex-wrap justify-center gap-1 bg-slate-950/60 p-1.5 rounded-2xl border border-purple-500/20">
+                <button onclick="selectSpread('one')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all bg-purple-600 text-white shadow-md" data-spread="one">1枚</button>
+                <button onclick="selectSpread('two')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="two">2枚(横)</button>
+                <button onclick="selectSpread('three')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="three">3枚(横)</button>
+                <button onclick="selectSpread('four')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="four">4枚(上1下3)</button>
+                <button onclick="selectSpread('six')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="six">6枚(上下3)</button>
+                <button onclick="selectSpread('hexagram')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="hexagram">ヘキサグラム(7枚)</button>
+                <button onclick="selectSpread('celtic')" class="spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50" data-spread="celtic">ケルト十字(10枚)</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Column: Controls & Spread Board (7 cols on xl) -->
+        <section class="xl:col-span-7 flex flex-col gap-6 w-full min-w-0">
+            
+            <!-- Question & Config Card -->
+            <div class="bg-slate-900/70 backdrop-blur-md border border-purple-500/30 rounded-3xl p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <h2 class="text-sm font-bold text-purple-300 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> リーディング設定 & 質問
+                </h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">仕事・キャリアに関するお悩みやテーマ（任意）</label>
+                        <input type="text" id="userQuestion" placeholder="例: 新プロジェクトを成功させるには？ チーム内の人間関係を円滑にするには？" class="w-full bg-slate-950/80 border border-purple-500/30 rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-400 text-purple-100 placeholder-slate-500 transition-all">
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <div class="text-xs text-purple-300 bg-purple-950/40 px-3 py-1.5 rounded-xl border border-purple-500/20">
+                            選択中: <span id="currentSpreadName" class="font-bold text-amber-300">1枚引き</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <button onclick="drawTarot()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-sm font-bold px-6 py-2.5 rounded-2xl shadow-lg shadow-purple-600/40 transition-all transform active:scale-95 flex items-center gap-2">
+                                <i class="fa-solid fa-bolt"></i> カードを引く
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spread Visualization Canvas Board -->
+            <div class="bg-slate-900/70 backdrop-blur-md border border-purple-500/30 rounded-3xl p-3 sm:p-5 shadow-2xl min-h-[520px] flex flex-col items-center justify-center relative overflow-hidden w-full min-w-0">
+                <div id="welcomeState" class="text-center py-16 space-y-4">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-purple-950/80 border border-purple-500/40 flex items-center justify-center shadow-xl animate-pulse">
+                        <i class="fa-solid fa-hand-sparkles text-3xl text-purple-300"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-purple-200">タロット鑑定の準備ができました</h3>
+                    <p class="text-xs text-slate-400 max-w-sm mx-auto">「カードを引く」ボタンを押すと、選択したスプレッドの配置通りにランダムでカードが展開されます。</p>
+                </div>
+
+                <!-- Spread layout container -->
+                <div id="spreadContainer" class="w-full flex flex-col items-center justify-center gap-4 hidden overflow-x-auto p-1">
+                    <!-- Cards injected dynamically -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Detailed Breakdown (5 cols on xl) -->
+        <section class="xl:col-span-5 flex flex-col gap-6">
+            <div class="bg-slate-900/70 backdrop-blur-md border border-purple-500/30 rounded-3xl p-6 shadow-2xl h-full flex flex-col">
+                <div class="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-4">
+                    <h2 class="text-sm font-bold text-purple-300 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-amber-400"></i> ワークサポート鑑定結果
+                    </h2>
+                    <span id="selectedCardCount" class="text-xs bg-purple-950/80 text-purple-200 px-3 py-1 rounded-xl border border-purple-500/30">0枚選択中</span>
+                </div>
+
+                <!-- Explanation Feed -->
+                <div id="explanationFeed" class="flex-1 overflow-y-auto space-y-4 max-h-[720px] pr-1">
+                    <div class="text-center py-20 text-slate-500 space-y-2">
+                        <i class="fa-solid fa-feather text-3xl opacity-40"></i>
+                        <p class="text-xs">カードを引くと、ここに各ポジションの詳細な意味やサポート情報が即座に表示されます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Full 78 Tarot Cards Database with folder path support
+        // 大アルカナ (images/major/...) と 小アルカナ (images/minor/...)
+        const tarotCards = [
+            // Major Arcana (22 cards)
+            { id: 0, name: "愚者 (The Fool)", type: "major", image: "images/major/fool.png", symbol: "崖っぷちの若者と白い犬", meaning: "新しいプロジェクトのスタート、自由な発想、リスクを恐れない挑戦。", location: "オープンなコワーキングスペース、窓際の席、屋外", goods: "ノートパソコンケース、スニーカー、新しい手帳", herb: "ローズマリー、ペパーミント" },
+            { id: 1, name: "魔術師 (The Magician)", type: "major", image: "images/major/magician.png", symbol: "祭壇上の道具と無限大の記号", meaning: "スキルとリソースの活用、クリエイティブな企画の立案、交渉の成功。", location: "デスクの正面、プレゼンルーム、工具箱の周辺", goods: "高品質な万年筆、ガジェット、名刺入れ", herb: "ベイリーフ（月桂樹）、バジル" },
+            { id: 2, name: "女教皇 (The High Priestess)", type: "major", image: "images/major/high_priestess.png", symbol: "ヴェールの前の二本の柱と巻物", meaning: "直感とリサーチ、冷静な分析、秘密裏の準備やデータ検証。", location: "静かな書斎、図書館、資料室、隅の席", goods: "タロットカード、本、クリアファイル、アロマキャンドル", herb: "ジャスミン、クラリセージ" },
+            { id: 3, name: "女帝 (The Empress)", type: "major", image: "images/major/empress.png", symbol: "豊かな麦畑と王座の女性", meaning: "チームの育成、プロジェクトの繁栄、豊かな成果と共創。", location: "観葉植物のある明るいオフィス、休憩室、カフェ", goods: "お気に入りのマグカップ、クッション、美しいカレンダー", herb: "ローズ、ゼラニウム" },
+            { id: 4, name: "皇帝 (The Emperor)", type: "major", image: "images/major/emperor.png", symbol: "石の王座と地球儀を持つ皇帝", meaning: "リーダーシップ、確固たる基盤、スケジューリングと組織化。", location: "重役室、ミーティングルームの中央", goods: "重厚なデスクマット、時計、オーガナイザー", herb: "シダーウッド、ブラックペッパー" },
+            { id: 5, name: "法王 (The Hierophant)", type: "major", image: "images/major/hierophant.png", symbol: "二人の信徒と教皇の祝福", meaning: "社内規則の遵守、メンターからの指導、信頼できるパートナーシップ。", location: "会議室、セミナー会場、研修ルーム", goods: "契約書フォルダー、ガイドブック、伝統的な文房具", herb: "フランキンセンス、ミルラ" },
+            { id: 6, name: "恋人たち (The Lovers)", type: "major", image: "images/major/lovers.png", symbol: "エデンの園の天使と二人の人物", meaning: "価値観の合致、チームワークの調和、重要なキャリアの選択。", location: "カフェの対面席、コラボレーションスペース", goods: "ペアのステーショナリー、デザイン性の高いツール", herb: "ラベンダー、イランイラン" },
+            { id: 7, name: "戦車 (The Chariot)", type: "major", image: "images/major/chariot.png", symbol: "2頭のスフィンクスを従えた戦車", meaning: "目標への猛進、競合への勝利、スピード感のあるタスク遂行。", location: "移動中の車内、新幹線、アクティブな作業スペース", goods: "タンブラー、スポーツバッグ、タイムタイマー", herb: "ペパーミント、レモングラス" },
+            { id: 8, name: "力 (Strength)", type: "major", image: "images/major/strength.png", symbol: "女性がライオンの口を優しく押さえている", meaning: "忍耐力、困難な顧客やトラブルの円満な解決、内省的な強さ。", location: "落ち着いた個室、デスクの左側", goods: "ストレスボール、お守り、心地よいチェア", herb: "カモミール、ベルガモット" },
+            { id: 9, name: "隠者 (The Hermit)", type: "major", image: "images/major/hermit.png", symbol: "灯火を持つ老人の姿", meaning: "単独での深掘り、スキルアップのための自己分析、専門性の追求。", location: "深夜の自室、仕切られたデスク、静かな一角", goods: "デスクライト、読書スタンド、ヘッドホン", herb: "サンダルウッド、タイム" },
+            { id: 10, name: "運命の輪 (Wheel of Fortune)", type: "major", image: "images/major/wheel_of_fortune.png", symbol: "雲の上の回る歯車と動物たち", meaning: "突然のチャンス到来、状況の好転、タイミングを掴んだスムーズな進行。", location: "窓際、出入り口付近、風通しの良い場所", goods: "置時計、カレンダー、お気に入りのキーホルダー", herb: "オレンジ、ベルガモット" },
+            { id: 11, name: "正義 (Justice)", type: "major", image: "images/major/justice.png", symbol: "天秤と剣を持つ人物", meaning: "公正な評価、契約の締結、バランスの取れた労働配分。", location: "法務関連のデスク、整理整頓された作業スペース", goods: "計算機、スケール、精度の高いツール", herb: "レモン、ユーカリ" },
+            { id: 12, name: "吊るされた男 (The Hanged Man)", type: "major", image: "images/major/hanged_man.png", symbol: "逆さ吊りの人物と後光", meaning: "視点を変えたアプローチ、停滞期における気づき、犠牲と学び。", location: "ソファ席、リクライニングチェア、少し離れた休憩スペース", goods: "アイマスク、ストレッチゴム、リラックスクッション", herb: "マジョラム、ラベンダー" },
+            { id: 13, name: "死神 (Death)", type: "major", image: "images/major/death.png", symbol: "旗を持つ骸骨の騎士", meaning: "古いやり方の終了、不要な業務の断捨離、心機一転のリスタート。", location: "シュレッダーの近く、整理したクローゼット、ゴミ箱の横", goods: "シュレッダー、収納ボックス、クリアケース", herb: "ティーツリー、サイプレス" },
+            { id: 14, name: "節制 (Temperance)", type: "major", image: "images/major/temperance.png", symbol: "水差しから水を移す天使", meaning: "異なる意見の調整、ワークライフバランスの維持、効率的なマルチタスク。", location: "給湯室、ウォーターサーバーの横、リフレッシュエリア", goods: "ウォーターボトル、ティーポット、デジタルタイマー", herb: "メリッサ（レモンバーム）、カモミール" },
+            { id: 15, name: "悪魔 (The Devil)", type: "major", image: "images/major/devil.png", symbol: "鎖につながれた二人の人間と悪魔", meaning: "悪習慣やマンネリからの脱却、過度な残業の防止、執着の手放し。", location: "閉め切った部屋、モニターの光だけの空間", goods: "ブルーライトカットメガネ、目覚まし時計、アロマスプレー", herb: "パチュリ、クローブ" },
+            { id: 16, name: "塔 (The Tower)", type: "major", image: "images/major/tower.png", symbol: "雷に撃たれる塔と落ちる人々", meaning: "突然のトラブルや仕様変更、これまでの前提が崩れることへの適応。", location: "非常口付近、サーバー室の近く、オープンなフロア", goods: "バックアップ用HDD、防災グッズ、ノートと赤ペン", herb: "ジンジャー、ブラックペッパー" },
+            { id: 17, name: "星 (The Star)", type: "major", image: "images/major/star.png", symbol: "水辺に水を注ぐ裸の女性と星空", meaning: "希望とインスピレーション、将来のキャリアビジョン、クリアな展望。", location: "見晴らしの良い窓際、ベランダ、開放的なフロア", goods: "星型のオブジェ、美しいノート、デジタルタブレット", herb: "スターアニス、ネロリ" },
+            { id: 18, name: "月 (The Moon)", type: "major", image: "images/major/moon.png", symbol: "狼と犬、水から這い出るザリガニ", meaning: "先行き不透明な状況、不安や憶測の解消、慎重な情報確認。", location: "夜間の自宅作業スペース、薄暗い部屋", goods: "間接照明、アロマディフューザー、ブランケット", herb: "カモミール、ジャスミン" },
+            { id: 19, name: "太陽 (The Sun)", type: "major", image: "images/major/sun.png", symbol: "大きな太陽の下で馬に乗る子供", meaning: "明るい成功、チーム全体のモチベーション向上、明確な達成感。", location: "日の差し込む窓際、テラス席、明るい会議室", goods: "ひまわりのモチーフ、明るい色の文房具、観葉植物", herb: "サンフラワー、オレンジ" },
+            { id: 20, name: "審判 (Judgement)", type: "major", image: "images/major/judgement.png", symbol: "ラッパを吹く天使と墓から蘇る人々", meaning: "過去の企画の再挑戦、評価のフィードバック受領、重要な決断の時。", location: "人事面談室、ステージ、発表用の壇上", goods: "マイク、プレゼンレークター、過去の業績ファイル", herb: "ローズマリー、ジュニパーベリー" },
+            { id: 21, name: "世界 (The World)", type: "major", image: "images/major/world.png", symbol: "月桂冠の中のダンサーと四隅の生き物", meaning: "プロジェクトの完全なる完遂、目標達成、次のステージへの移行。", location: "完成したオフィスの中心、最上階のラウンジ", goods: "トロフィー、記念の品、世界地図や地球儀の置物", herb: "ローレル（月桂樹）、フランキンセンス" }
+        ];
+
+        // Minor Arcana (56 cards) - images/minor/...
+        const minorSuits = [
+            { folder: "wands", name: "ワンド", symbol: "燃え盛る杖・炎", herb: "ジンジャー、シナモン", goods: "カラーペン、付箋" },
+            { folder: "cups", name: "カップ", symbol: "聖杯・水", herb: "カモミール、ラベンダー", goods: "ティーカップ、アロマ" },
+            { folder: "swords", name: "ソード", symbol: "剣・風", herb: "ユーカリ、ペパーミント", goods: "シャープペン、ハサミ" },
+            { folder: "pentacles", name: "ペンタクル", symbol: "金貨・土", herb: "パチュリ、シナモン", goods: "財布、スケジュール帳" }
+        ];
+        const minorRanks = [
+            { rank: "エース", file: "ace" },
+            { rank: "2", file: "2" },
+            { rank: "3", file: "3" },
+            { rank: "4", file: "4" },
+            { rank: "5", file: "5" },
+            { rank: "6", file: "6" },
+            { rank: "7", file: "7" },
+            { rank: "8", file: "8" },
+            { rank: "9", file: "9" },
+            { rank: "10", file: "10" },
+            { rank: "ペイジ", file: "page" },
+            { rank: "ナイト", file: "knight" },
+            { rank: "クイーン", file: "queen" },
+            { rank: "キング", file: "king" }
+        ];
+        
+        let cardIdCounter = 22;
+        minorSuits.forEach(suit => {
+            minorRanks.forEach(r => {
+                tarotCards.push({
+                    id: cardIdCounter++,
+                    name: `${suit.name}の${r.rank}`,
+                    type: "minor",
+                    image: `images/minor/${suit.folder}/${r.file}.png`,
+                    symbol: `${suit.symbol}を持つ${r.rank}`,
+                    meaning: `${suit.name}のエネルギーが${r.rank}の性質として仕事やプロジェクトに発揮される時期。`,
+                    location: `${suit.name}に対応する作業エリア・デスク周辺`,
+                    goods: suit.goods,
+                    herb: suit.herb
+                });
+            });
+        });
+
+        let currentSpread = 'one';
+        let currentDrawnCards = [];
+
+        const spreadConfigs = {
+            one: { name: '1枚引き', count: 1 },
+            two: { name: '2枚引き（横並び）', count: 2 },
+            three: { name: '3枚引き（横並び）', count: 3 },
+            four: { name: '4枚引き（上1・下3）', count: 4 },
+            six: { name: '6枚引き（上3・下3）', count: 6 },
+            hexagram: { name: 'ヘキサグラム（7枚・六芒星配置）', count: 7 },
+            celtic: { name: 'ケルト十字（10枚・伝統クロス配置）', count: 10 }
+        };
+
+        function selectSpread(type) {
+            currentSpread = type;
+            document.querySelectorAll('.spread-btn').forEach(btn => {
+                if(btn.dataset.spread === type) {
+                    btn.className = "spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all bg-purple-600 text-white shadow-md";
+                } else {
+                    btn.className = "spread-btn px-2.5 py-1.5 text-xs font-bold rounded-xl transition-all text-purple-200 hover:bg-purple-900/50";
+                }
+            });
+            document.getElementById('currentSpreadName').innerText = spreadConfigs[type].name;
+            drawTarot();
+        }
+
+        function drawTarot() {
+            const config = spreadConfigs[currentSpread];
+            const count = config.count;
+            
+            let indices = [];
+            while(indices.length < count) {
+                let r = Math.floor(Math.random() * tarotCards.length);
+                if(!indices.includes(r)) indices.push(r);
+            }
+
+            currentDrawnCards = indices.map((idx, i) => {
+                const baseCard = tarotCards[idx];
+                const isReversed = Math.random() < 0.25;
+                const positionLabel = getPositionLabel(currentSpread, i);
+                return {
+                    ...baseCard,
+                    isReversed,
+                    displayName: baseCard.name + (isReversed ? " (逆位置)" : ""),
+                    adjustedMeaning: isReversed ? "【逆位置】 " + baseCard.meaning + " (見直しや慎重なアプローチが必要)" : baseCard.meaning,
+                    positionLabel
+                };
+            });
+
+            renderSpreadBoard();
+            renderExplanations();
+        }
+
+        function getPositionLabel(spread, index) {
+            const labels = {
+                one: ["本日のアドバイス"],
+                two: ["現状・背景", "これからの対策"],
+                three: ["過去の経緯", "現在の状況", "未来の予測"],
+                four: ["1. 現状・問題（上）", "2. 原因（下左）", "3. 対策（下中）", "4. 結果（下右）"],
+                six: ["1. 上段左", "2. 上段中", "3. 上段右", "4. 下段左", "5. 下段中", "6. 下段右"],
+                hexagram: [
+                    "1段目: 現在",
+                    "2段目左: ランダム",
+                    "2段目中: アドバイス",
+                    "2段目右: 過程",
+                    "3段目左: 未来2",
+                    "3段目右: 未来1",
+                    "4段目: アドバイス"
+                ],
+                celtic: [
+                    "1. 過去",
+                    "2. 現在",
+                    "3. 未来",
+                    "4. 顕在意識",
+                    "5. 潜在意識",
+                    "6. 障害",
+                    "7. 原因",
+                    "8. 周囲の状況",
+                    "9. どうなりたいか",
+                    "10. 最終的な未来"
+                ]
+            };
+            return (labels[spread] && labels[spread][index]) ? labels[spread][index] : `第${index+1}ポジション`;
+        }
+
+        function renderSpreadBoard() {
+            const welcomeState = document.getElementById('welcomeState');
+            const spreadContainer = document.getElementById('spreadContainer');
+            welcomeState.classList.add('hidden');
+            spreadContainer.classList.remove('hidden');
+
+            let html = '';
+
+            if (currentSpread === 'four') {
+                html = `
+                    <div class="flex flex-col items-center gap-3 w-full">
+                        <div class="flex justify-center">${createCardHtml(currentDrawnCards[0])}</div>
+                        <div class="grid grid-cols-3 gap-2 w-full max-w-lg">
+                            ${createCardHtml(currentDrawnCards[1])}
+                            ${createCardHtml(currentDrawnCards[2])}
+                            ${createCardHtml(currentDrawnCards[3])}
+                        </div>
+                    </div>
+                `;
+            } else if (currentSpread === 'six') {
+                html = `
+                    <div class="flex flex-col gap-3 w-full max-w-xl mx-auto">
+                        <div class="grid grid-cols-3 gap-2 w-full">${createCardHtml(currentDrawnCards[0])}${createCardHtml(currentDrawnCards[1])}${createCardHtml(currentDrawnCards[2])}</div>
+                        <div class="grid grid-cols-3 gap-2 w-full">${createCardHtml(currentDrawnCards[3])}${createCardHtml(currentDrawnCards[4])}${createCardHtml(currentDrawnCards[5])}</div>
+                    </div>
+                `;
+            } else if (currentSpread === 'hexagram') {
+                // 六芒星レイアウト（1段目:現在 / 2段目:未来1,アドバイス,ランダム / 3段目:未来2,未来3 / 4段目:最終アドバイス）
+                html = `
+                    <div class="flex flex-col items-center gap-2 sm:gap-3 w-full py-2 relative scale-95 sm:scale-100">
+                        <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                            <i class="fa-solid fa-star-of-life text-9xl text-purple-400"></i>
+                        </div>
+                        
+                        <!-- 1段目: 現在 -->
+                        <div class="flex justify-center z-10">
+                            ${createCardHtml(currentDrawnCards[0], true)}
+                        </div>
+                        
+                        <!-- 2段目: 未来1 / アドバイス / ランダム -->
+                        <div class="flex justify-center items-center gap-2 sm:gap-4 z-10 w-full max-w-md">
+                            ${createCardHtml(currentDrawnCards[1], true)}
+                            ${createCardHtml(currentDrawnCards[2], true)}
+                            ${createCardHtml(currentDrawnCards[3], true)}
+                        </div>
+                        
+                        <!-- 3段目: 未来2 / 未来3 -->
+                        <div class="flex justify-center gap-6 sm:gap-12 z-10 w-full">
+                            ${createCardHtml(currentDrawnCards[4], true)}
+                            ${createCardHtml(currentDrawnCards[5], true)}
+                        </div>
+                        
+                        <!-- 4段目: 最終アドバイス -->
+                        <div class="flex justify-center z-10">
+                            ${createCardHtml(currentDrawnCards[6], true)}
+                        </div>
+                    </div>
+                `;
+            } else if (currentSpread === 'celtic') {
+                // ケルト十字レイアウト（10枚完全配置）
+                // 0:過去, 1:現在, 2:未来, 3:顕在意識(2の真上), 4:潜在意識(2の真下), 5:障害(6の左横), 6:原因, 7:周囲, 8:どうなりたいか, 9:最終的な未来
+                html = `
+                    <div class="w-full flex flex-col items-center justify-center py-2 overflow-x-auto">
+                        <div class="min-w-[340px] sm:min-w-[420px] max-w-full flex flex-col gap-2 scale-90 sm:scale-100 origin-center">
+                            
+                            <!-- 1段目: 右端に【最終的な未来】 -->
+                            <div class="grid grid-cols-10 gap-1 items-center">
+                                <div class="col-span-8"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[9], true)}</div>
+                            </div>
+
+                            <!-- 2段目: 中央に【顕在意識】(3) / 右端に【どうなりたいか】(8) -->
+                            <div class="grid grid-cols-10 gap-1 items-center">
+                                <div class="col-span-2"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[3], true)}</div>
+                                <div class="col-span-4"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[8], true)}</div>
+                            </div>
+
+                            <!-- 3段目: 左から【過去】(0)、【現在】(1)、【未来】(2) / 右端に【周囲】(7) -->
+                            <div class="grid grid-cols-10 gap-1 items-center">
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[0], true)}</div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[1], true)}</div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[2], true)}</div>
+                                <div class="col-span-2"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[7], true)}</div>
+                            </div>
+
+                            <!-- 4段目: 中央に【潜在意識】(4) / 右に【原因】(6) -->
+                            <div class="grid grid-cols-10 gap-1 items-center">
+                                <div class="col-span-2"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[4], true)}</div>
+                                <div class="col-span-4"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[6], true)}</div>
+                            </div>
+
+                            <!-- 5段目: 【原因】の左横に【障害】(5) -->
+                            <div class="grid grid-cols-10 gap-1 items-center">
+                                <div class="col-span-6"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[5], true)}</div>
+                                <div class="col-span-2"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+            } else {
+                html = `<div class="flex flex-wrap justify-center gap-3 sm:gap-4 w-full">`;
+                currentDrawnCards.forEach(card => {
+                    html += createCardHtml(card);
+                });
+                html += `</div>`;
+            }
+
+            spreadContainer.innerHTML = html;
+        }
+
+        function createCardHtml(card, isCompact = false) {
+            const rotationStyle = card.isReversed ? 'transform: rotate(180deg);' : '';
+            
+            // 縦長のカード画像が美しく収まるように高さを十分に確保 (h-28〜h-36)
+            const cardWidthClass = isCompact ? 'w-16 sm:w-20' : 'w-24 sm:w-28 md:w-32';
+            const imgHeightClass = isCompact ? 'h-24 sm:h-28' : 'h-32 sm:h-40 md:h-44';
+
+            const imgContent = `
+                <img src="${card.image}" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/200x320/1e1b4b/c084fc?text=${encodeURIComponent(card.name.split(' ')[0])}';" 
+                     class="w-full ${imgHeightClass} object-cover rounded-lg border border-purple-400/40 bg-slate-950" 
+                     alt="${card.name}">
+            `;
+
+            return `
+                <div class="tarot-card bg-slate-950/90 border border-purple-500/30 rounded-xl p-1 sm:p-1.5 ${cardWidthClass} flex flex-col items-center shadow-lg animate-fadeIn">
+                    <div class="text-[8px] sm:text-[9px] font-bold text-amber-300 mb-0.5 text-center truncate w-full" title="${card.positionLabel}">${card.positionLabel}</div>
+                    <div class="w-full mb-1 transition-transform duration-500" style="${rotationStyle}">
+                        ${imgContent}
+                    </div>
+                    <div class="text-[9px] sm:text-xs font-bold text-purple-100 text-center truncate w-full" title="${card.name}">${card.name}</div>
+                    <div class="text-[7px] sm:text-[8px] text-purple-300 mt-0.5">${card.isReversed ? '【逆位置】' : '【正位置】'}</div>
+                </div>
+            `;
+        }
+
+        function renderExplanations() {
+            const feed = document.getElementById('explanationFeed');
+            document.getElementById('selectedCardCount').innerText = `${currentDrawnCards.length}枚選択中`;
+
+            let html = '';
+            currentDrawnCards.forEach((card, idx) => {
+                html += `
+                    <div class="bg-slate-950/80 border border-purple-500/30 rounded-2xl p-4 shadow-lg space-y-3 relative overflow-hidden group hover:border-purple-400/60 transition-all animate-fadeIn">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-purple-500 to-indigo-600"></div>
+                        
+                        <div class="flex items-center justify-between border-b border-purple-500/20 pb-2">
+                            <div>
+                                <span class="text-[10px] font-bold bg-purple-950 text-amber-300 px-2.5 py-0.5 rounded-full border border-purple-500/30">${card.positionLabel}</span>
+                                <h4 class="text-sm font-bold text-purple-100 mt-1">${card.displayName}</h4>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-purple-900/40 flex items-center justify-center text-purple-300 text-xs font-bold border border-purple-500/20">
+                                #${idx + 1}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-2 text-xs">
+                            <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
+                                <i class="fa-solid fa-eye text-amber-400 mt-0.5 w-4 text-center"></i>
+                                <div><strong class="text-purple-300">象徴:</strong> <span class="text-slate-300">${card.symbol}</span></div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
+                                <i class="fa-solid fa-lightbulb text-purple-400 mt-0.5 w-4 text-center"></i>
+                                <div><strong class="text-purple-300">意味（仕事・サポート）:</strong> <span class="text-slate-200">${card.adjustedMeaning}</span></div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
+                                <i class="fa-solid fa-location-dot text-indigo-400 mt-0.5 w-4 text-center"></i>
+                                <div><strong class="text-purple-300">場所:</strong> <span class="text-slate-300">${card.location}</span></div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
+                                <i class="fa-solid fa-box-archive text-pink-400 mt-0.5 w-4 text-center"></i>
+                                <div><strong class="text-purple-300">雑貨や物:</strong> <span class="text-slate-300">${card.goods}</span></div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
+                                <i class="fa-solid fa-seedling text-emerald-400 mt-0.5 w-4 text-center"></i>
+                                <div><strong class="text-purple-300">ハーブ: »</strong> <span class="text-slate-300">${card.herb}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            feed.innerHTML = html;
+        }
+
+        window.onload = function() {
+            selectSpread('one');
+        };
+    </script>
+</body>
+</html>
