@@ -52,7 +52,7 @@
 </head>
 <body class="flex flex-col min-h-full">
 
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-purple-500/30 sticky top-0 z-50 px-4 py-3 shadow-xl">
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-purple-500/35 sticky top-0 z-50 px-4 py-3 shadow-xl">
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-purple-500/40">
@@ -110,7 +110,7 @@
             </div>
 
             <!-- Spread Visualization Canvas Board -->
-            <div class="bg-slate-900/70 backdrop-blur-md border border-purple-500/30 rounded-3xl p-3 sm:p-5 shadow-2xl min-h-[520px] flex flex-col items-center justify-center relative overflow-hidden w-full min-w-0">
+            <div class="bg-slate-900/70 backdrop-blur-md border border-purple-500/30 rounded-3xl p-3 sm:p-5 shadow-2xl min-h-[560px] flex flex-col items-center justify-center relative overflow-hidden w-full min-w-0">
                 <div id="welcomeState" class="text-center py-16 space-y-4">
                     <div class="w-20 h-20 mx-auto rounded-full bg-purple-950/80 border border-purple-500/40 flex items-center justify-center shadow-xl animate-pulse">
                         <i class="fa-solid fa-hand-sparkles text-3xl text-purple-300"></i>
@@ -150,72 +150,408 @@
     </main>
 
     <script>
-        // Full 78 Tarot Cards Database with folder path support
-        // 大アルカナ (images/major/...) と 小アルカナ (images/minor/...)
+        // Full Tarot Cards Database with explicit Major and Minor Arcana details
         const tarotCards = [
-            // Major Arcana (22 cards)
-            { id: 0, name: "愚者 (The Fool)", type: "major", image: "images/major/fool.png", symbol: "崖っぷちの若者と白い犬", meaning: "新しいプロジェクトのスタート、自由な発想、リスクを恐れない挑戦。", location: "オープンなコワーキングスペース、窓際の席、屋外", goods: "ノートパソコンケース、スニーカー、新しい手帳", herb: "ローズマリー、ペパーミント" },
-            { id: 1, name: "魔術師 (The Magician)", type: "major", image: "images/major/magician.png", symbol: "祭壇上の道具と無限大の記号", meaning: "スキルとリソースの活用、クリエイティブな企画の立案、交渉の成功。", location: "デスクの正面、プレゼンルーム、工具箱の周辺", goods: "高品質な万年筆、ガジェット、名刺入れ", herb: "ベイリーフ（月桂樹）、バジル" },
-            { id: 2, name: "女教皇 (The High Priestess)", type: "major", image: "images/major/high_priestess.png", symbol: "ヴェールの前の二本の柱と巻物", meaning: "直感とリサーチ、冷静な分析、秘密裏の準備やデータ検証。", location: "静かな書斎、図書館、資料室、隅の席", goods: "タロットカード、本、クリアファイル、アロマキャンドル", herb: "ジャスミン、クラリセージ" },
-            { id: 3, name: "女帝 (The Empress)", type: "major", image: "images/major/empress.png", symbol: "豊かな麦畑と王座の女性", meaning: "チームの育成、プロジェクトの繁栄、豊かな成果と共創。", location: "観葉植物のある明るいオフィス、休憩室、カフェ", goods: "お気に入りのマグカップ、クッション、美しいカレンダー", herb: "ローズ、ゼラニウム" },
-            { id: 4, name: "皇帝 (The Emperor)", type: "major", image: "images/major/emperor.png", symbol: "石の王座と地球儀を持つ皇帝", meaning: "リーダーシップ、確固たる基盤、スケジューリングと組織化。", location: "重役室、ミーティングルームの中央", goods: "重厚なデスクマット、時計、オーガナイザー", herb: "シダーウッド、ブラックペッパー" },
-            { id: 5, name: "法王 (The Hierophant)", type: "major", image: "images/major/hierophant.png", symbol: "二人の信徒と教皇の祝福", meaning: "社内規則の遵守、メンターからの指導、信頼できるパートナーシップ。", location: "会議室、セミナー会場、研修ルーム", goods: "契約書フォルダー、ガイドブック、伝統的な文房具", herb: "フランキンセンス、ミルラ" },
-            { id: 6, name: "恋人たち (The Lovers)", type: "major", image: "images/major/lovers.png", symbol: "エデンの園の天使と二人の人物", meaning: "価値観の合致、チームワークの調和、重要なキャリアの選択。", location: "カフェの対面席、コラボレーションスペース", goods: "ペアのステーショナリー、デザイン性の高いツール", herb: "ラベンダー、イランイラン" },
-            { id: 7, name: "戦車 (The Chariot)", type: "major", image: "images/major/chariot.png", symbol: "2頭のスフィンクスを従えた戦車", meaning: "目標への猛進、競合への勝利、スピード感のあるタスク遂行。", location: "移動中の車内、新幹線、アクティブな作業スペース", goods: "タンブラー、スポーツバッグ、タイムタイマー", herb: "ペパーミント、レモングラス" },
-            { id: 8, name: "力 (Strength)", type: "major", image: "images/major/strength.png", symbol: "女性がライオンの口を優しく押さえている", meaning: "忍耐力、困難な顧客やトラブルの円満な解決、内省的な強さ。", location: "落ち着いた個室、デスクの左側", goods: "ストレスボール、お守り、心地よいチェア", herb: "カモミール、ベルガモット" },
-            { id: 9, name: "隠者 (The Hermit)", type: "major", image: "images/major/hermit.png", symbol: "灯火を持つ老人の姿", meaning: "単独での深掘り、スキルアップのための自己分析、専門性の追求。", location: "深夜の自室、仕切られたデスク、静かな一角", goods: "デスクライト、読書スタンド、ヘッドホン", herb: "サンダルウッド、タイム" },
-            { id: 10, name: "運命の輪 (Wheel of Fortune)", type: "major", image: "images/major/wheel_of_fortune.png", symbol: "雲の上の回る歯車と動物たち", meaning: "突然のチャンス到来、状況の好転、タイミングを掴んだスムーズな進行。", location: "窓際、出入り口付近、風通しの良い場所", goods: "置時計、カレンダー、お気に入りのキーホルダー", herb: "オレンジ、ベルガモット" },
-            { id: 11, name: "正義 (Justice)", type: "major", image: "images/major/justice.png", symbol: "天秤と剣を持つ人物", meaning: "公正な評価、契約の締結、バランスの取れた労働配分。", location: "法務関連のデスク、整理整頓された作業スペース", goods: "計算機、スケール、精度の高いツール", herb: "レモン、ユーカリ" },
-            { id: 12, name: "吊るされた男 (The Hanged Man)", type: "major", image: "images/major/hanged_man.png", symbol: "逆さ吊りの人物と後光", meaning: "視点を変えたアプローチ、停滞期における気づき、犠牲と学び。", location: "ソファ席、リクライニングチェア、少し離れた休憩スペース", goods: "アイマスク、ストレッチゴム、リラックスクッション", herb: "マジョラム、ラベンダー" },
-            { id: 13, name: "死神 (Death)", type: "major", image: "images/major/death.png", symbol: "旗を持つ骸骨の騎士", meaning: "古いやり方の終了、不要な業務の断捨離、心機一転のリスタート。", location: "シュレッダーの近く、整理したクローゼット、ゴミ箱の横", goods: "シュレッダー、収納ボックス、クリアケース", herb: "ティーツリー、サイプレス" },
-            { id: 14, name: "節制 (Temperance)", type: "major", image: "images/major/temperance.png", symbol: "水差しから水を移す天使", meaning: "異なる意見の調整、ワークライフバランスの維持、効率的なマルチタスク。", location: "給湯室、ウォーターサーバーの横、リフレッシュエリア", goods: "ウォーターボトル、ティーポット、デジタルタイマー", herb: "メリッサ（レモンバーム）、カモミール" },
-            { id: 15, name: "悪魔 (The Devil)", type: "major", image: "images/major/devil.png", symbol: "鎖につながれた二人の人間と悪魔", meaning: "悪習慣やマンネリからの脱却、過度な残業の防止、執着の手放し。", location: "閉め切った部屋、モニターの光だけの空間", goods: "ブルーライトカットメガネ、目覚まし時計、アロマスプレー", herb: "パチュリ、クローブ" },
-            { id: 16, name: "塔 (The Tower)", type: "major", image: "images/major/tower.png", symbol: "雷に撃たれる塔と落ちる人々", meaning: "突然のトラブルや仕様変更、これまでの前提が崩れることへの適応。", location: "非常口付近、サーバー室の近く、オープンなフロア", goods: "バックアップ用HDD、防災グッズ、ノートと赤ペン", herb: "ジンジャー、ブラックペッパー" },
-            { id: 17, name: "星 (The Star)", type: "major", image: "images/major/star.png", symbol: "水辺に水を注ぐ裸の女性と星空", meaning: "希望とインスピレーション、将来のキャリアビジョン、クリアな展望。", location: "見晴らしの良い窓際、ベランダ、開放的なフロア", goods: "星型のオブジェ、美しいノート、デジタルタブレット", herb: "スターアニス、ネロリ" },
-            { id: 18, name: "月 (The Moon)", type: "major", image: "images/major/moon.png", symbol: "狼と犬、水から這い出るザリガニ", meaning: "先行き不透明な状況、不安や憶測の解消、慎重な情報確認。", location: "夜間の自宅作業スペース、薄暗い部屋", goods: "間接照明、アロマディフューザー、ブランケット", herb: "カモミール、ジャスミン" },
-            { id: 19, name: "太陽 (The Sun)", type: "major", image: "images/major/sun.png", symbol: "大きな太陽の下で馬に乗る子供", meaning: "明るい成功、チーム全体のモチベーション向上、明確な達成感。", location: "日の差し込む窓際、テラス席、明るい会議室", goods: "ひまわりのモチーフ、明るい色の文房具、観葉植物", herb: "サンフラワー、オレンジ" },
-            { id: 20, name: "審判 (Judgement)", type: "major", image: "images/major/judgement.png", symbol: "ラッパを吹く天使と墓から蘇る人々", meaning: "過去の企画の再挑戦、評価のフィードバック受領、重要な決断の時。", location: "人事面談室、ステージ、発表用の壇上", goods: "マイク、プレゼンレークター、過去の業績ファイル", herb: "ローズマリー、ジュニパーベリー" },
-            { id: 21, name: "世界 (The World)", type: "major", image: "images/major/world.png", symbol: "月桂冠の中のダンサーと四隅の生き物", meaning: "プロジェクトの完全なる完遂、目標達成、次のステージへの移行。", location: "完成したオフィスの中心、最上階のラウンジ", goods: "トロフィー、記念の品、世界地図や地球儀の置物", herb: "ローレル（月桂樹）、フランキンセンス" }
+            // Major Arcana (22 cards) - Updated 0 to 10 with precise Upright / Reversed data
+            { id: 0, name: "愚者 (The Fool)", type: "major", image: "images/major/fool.png", symbol: "自由・無限の可能性・冒険の始まり・純粋さ", meaningUp: "自由な旅立ち、無邪気さ、無限の可能性、ノープラン", meaningRev: "無計画な暴走、軽率さ、無責任、足元の不注意", locationUp: "断崖絶壁のフチ、旅行先、初めて訪れる街、青空の下", locationRev: "崖っぷちの危険な場所、準備不足で立ち往生する場所", goodsUp: "バックパック、旅の杖、白いバラ、スニーカー", goodsRev: "破れたリュック、落とし物、サイズ違いの靴", herbUp: "ベルガモット（旅立ちのワクワク感と解放感）", herbRev: "パチュリ（フワフワ浮ついた心をグラウンディング）" },
+            { id: 1, name: "魔術師 (The Magician)", type: "major", image: "images/major/magician.png", symbol: "創造・スタート・意思と技術・準備完了", meaningUp: "才能の発揮、スタートを切る、自信、手先の器用さ", meaningRev: "スキル不足、口先だけ、詐欺的な言動、準備不足", locationUp: "ワークショップ、プレゼン会場、作業台の前、ステージ", locationRev: "イカサマの手品師がいる場所、見切り発車の現場", goodsUp: "マジックワンド（魔法の杖）、工具一式、文房具セット", goodsRev: "メッキの剥がれた道具、作動しない機材", herbUp: "ペパーミント（冴え渡る知性と集中力）", herbRev: "ローズマリー（自信過剰や混乱した思考を整える）" },
+            { id: 2, name: "女教皇 (The High Priestess)", type: "major", image: "images/major/high_priestess.png", symbol: "直感・神秘・知性・静寂・客観性", meaningUp: "鋭い直感、静かな知性、秘密、冷静沈着", meaningRev: "完璧主義、神経質、批判的、ヒステリック、冷淡", locationUp: "静かな図書館、神殿、夜の自室、勉強部屋", locationRev: "緊張感の漂う面接室、ギクシャクした静寂の空間", goodsUp: "羊皮紙、書物、三日月のモチーフ、レース", goodsRev: "破れた本、批判的な言葉が書かれたメモ", herbUp: "クラリセージ（直感力と深い洞察力を開く）", herbRev: "ラベンダー（神経質になりすぎた心を解きほぐす）" },
+            { id: 3, name: "女帝 (The Empress)", type: "major", image: "images/major/empress.png", symbol: "豊穣・愛・母性・豊かさの享受・美", meaningUp: "愛される喜び、実り、母性、豊かな感覚、満たされ", meaningRev: "怠惰、過保護、嫉妬、わがまま、贅沢すぎる生活", locationUp: "花いっぱいの庭園、高級サロン、居心地の良いリビング", locationRev: "散らかしっぱなしの部屋、贅沢で荒れた生活空間", goodsUp: "クッション、高級な化粧品、ドレス、ザクロ", goodsRev: "高級品の見せびらかし、賞味期限切れのごちそう", herbUp: "ローズ（愛と豊かさを全身で享受する）", herbRev: "フェンネル（過剰な欲や怠惰さをリセットする）" },
+            { id: 4, name: "皇帝 (The Emperor)", type: "major", image: "images/major/emperor.png", symbol: "社会的立場・責任・構造・リーダーシップ・安定", meaningUp: "統率力、確固たる基盤、実行力、責任感、自信", meaningRev: "独裁的、頑固、意志の弱さ、無責任、過度な支配", locationUp: "社長室、役所、重役会議室、城砦", locationRev: "ワンマン経営の現場、横柄な態度が蔓延する場所", goodsUp: "玉座、王冠、印鑑、重厚な革の手帳", goodsRev: "権力を振りかざす指示書、壊れた印鑑", herbUp: "シダーウッド（ブレない芯と強い意志を培う）", herbRev: "サンダルウッド（傲慢さや強情さを和らげる）" },
+            { id: 5, name: "法王 (The Hierophant)", type: "major", image: "images/major/hierophant.png", symbol: "伝統・道徳・教え・アドバイザー・包容力", meaningUp: "慈悲深さ、良き相談相手、ルールを守る、信頼", meaningRev: "形式主義、お説教、頭の硬さ、悪徳な教え", locationUp: "チャペル、学校の校長室、相談室、伝統ある施設", locationRev: "形式ばかりで心の通わない場所、不快なお説教の場", goodsUp: "鍵、聖書、受講票、格式高い証書", goodsRev: "押し付けがましいマニュアル、不当な契約書", herbUp: "フランキンセンス（聖なる導きと精神の昇華）", herbRev: "ティーツリー（固執した考えや偏見をクレンジング）" },
+            { id: 6, name: "恋人たち (The Lovers)", type: "major", image: "images/major/lovers.png", symbol: "選択・調和・情熱・価値観の一致・パートナーシップ", meaningUp: "心惹かれる選択、意気投合、最高のパートナーシップ", meaningRev: "迷い、誘惑に負ける、浮気性、優柔不断", locationUp: "デートスポット、美しい庭園、お気に入りの選択の場", locationRev: "誘惑の多い歓楽街、目移りして決められないショップ", goodsUp: "ハートのモチーフ、ペアアクセサリー、招待状", goodsRev: "解消された約束、片方だけのイヤリング", herbUp: "イランイラン（ときめきと情熱を引き出す）", herbRev: "メリッサ（目移りや誘惑による混乱を鎮める）" },
+            { id: 7, name: "戦車 (The Chariot)", type: "major", image: "images/major/chariot.png", symbol: "勝利・猛進・コントロール・乗り越える力", meaningUp: "スピーディな勝利、障害の克服、強い意思での前進", meaningRev: "コントロール不能、暴走、挫折、空回り", locationUp: "スポーツの試合会場、高速道路、勝利のステージ", locationRev: "交通事故の現場、立ち往生している車内", goodsUp: "ハンドル、スニーカー、トロフィー、車", goodsRev: "壊れたブレーキ、パンクしたタイヤ", herbUp: "ブラックペッパー（突破力と果敢な行動力）", herbRev: "カモミール（焦りや暴走した感情を冷却する）" },
+            { id: 8, name: "力量 (Strength)", type: "major", image: "images/major/strength.png", symbol: "不屈の精神・優しさによる包容・真の強さ・自制", meaningUp: "強い忍耐力、優しさで制する、感情のコントロール", meaningRev: "感情の爆発、弱気、あきらめ、力量不足", locationUp: "動物園、静かな心のトレーニング場、平和なリビング", locationRev: "感情が衝突して荒れた場所、自己嫌悪に陥る部屋", goodsUp: "花の冠、リード、ふんわりしたブランケット", goodsRev: "ちぎれたロープ、手におえない猛獣の図鑑", herbUp: "タイム（困難に屈しない不屈の優しさと勇気）", herbRev: "セントジョーンズワート（心が折れそうな時のパワーチャージ）" },
+            { id: 9, name: "隠者 (The Hermit)", type: "major", image: "images/major/hermit.png", symbol: "内省・探求・静寂・真理の追求・熟考", meaningUp: "深い内省、自分を見つめ直す、熟考、経験豊かな助言", meaningRev: "孤立、偏屈、閉鎖的、現実逃避、頑固", locationUp: "静かな書斎、山奥の庵、夜の散歩道", locationRev: "閉じこもりっきりの部屋、偏屈な人の部屋", goodsUp: "ランタン（カンドル）、杖、古い手帳、砂時計", goodsRev: "消えたろうそく、埃をかぶった鍵", herbUp: "ミルラ/没薬（深い精神世界への探求と内省）", herbRev: "スイートオレンジ（孤独で閉ざされた心に明るさを取り戻す）" },
+            { id: 10, name: "運命の輪 (Wheel of Fortune)", type: "major", image: "images/major/wheel_of_fortune.png", symbol: "転機・チャンス・運命の波・好転", meaningUp: "運命的な出会い、チャンス到来、時代の波に乗る", meaningRev: "タイミングの悪さ、裏目に出る、一過性の不運", locationUp: "時計台、観覧車、交差点、ルーレットのある場所", locationRev: "乗り遅れた駅のホーム、動かないエレベーター", goodsUp: "腕時計、ルーレット、車輪、コイン", goodsRev: "狂った時計、すれ違いの乗車券", herbUp: "グレープフルーツ（幸運の波を一気に引き寄せる）", herbRev: "レモングラス（悪循環を断ち切り、リセットする）" },
+            { id: 11, name: "正義 (Justice)", type: "major", image: "images/major/justice.png", symbol: "公平・決断・論理・バランス・契約", meaningUp: "客観的な判断、公平な扱い、因果応報、契約の成立", meaningRev: "不公平、偏見、両天秤、法律トラブル、不正", locationUp: "裁判所、契約の場、行政窓口、面接会場", locationRev: "贔屓や不当な評価が横行する現場、揉めている部屋", goodsUp: "天秤、契約書、両刃の剣、印鑑", goodsRev: "破られた契約書、傾いた天秤", herbUp: "ユーカリ（ブレない客観性と公平な視点）", herbRev: "ペパーミント（不当さや偏見によるモヤモヤを吹き飛ばす）" },
+            { id: 12, name: "吊るされた男 (The Hanged Man)", type: "major", image: "images/major/hanged_man.png", symbol: "試練・自己犠牲・視点の転換・報われる静止", meaningUp: "視点を変える、修行期間、報われる奉仕、忍耐", meaningRev: "無駄な苦労、徒労、動けない焦り、報われない犠牲", locationUp: "ヨガスタジオ、瞑想ルーム、リハビリ施設", locationRev: "骨折り損の現場、身動きの取れない狭い部屋", goodsUp: "ヨガマット、後光（光輪）のモチーフ、砂時計", goodsRev: "絡まったロープ、無駄な時間のタイムカード", herbUp: "サイプレス（執着を手放し、流れに身を任せる）", herbRev: "セントジョーンズワート（報われない疲れを癒やす）" },
+            { id: 13, name: "死神 (Death)", type: "major", image: "images/major/death.png", symbol: "終焉と再生・大きな一区切り・脱皮・リセット", meaningUp: "完全な終了、未練を断つ、新しい始まり、劇的変化", meaningRev: "未練、未完のままの停滞、往生際の悪さ、再生の遅れ", locationUp: "卒業式会場、解体現場、断捨離後の部屋", locationRev: "埃をかぶった物置、捨てられないゴミの山", goodsUp: "大鎌、白いバラ、ごみ袋、黒い旗", goodsRev: "カビの生えた思い出の品、未練の残るメッセージ", herbUp: "ジュニパーベリー（過去の未練や負の感情を浄化する）", herbRev: "ジンジャー（停滞した状況に新しい命を吹き込む）" },
+            { id: 14, name: "節制 (Temperance)", type: "major", image: "images/major/temperance.png", symbol: "調和・循環・バランス・ちょうど良い塩梅", meaningUp: "異なるものの融合、穏やかな交流、節度、健康", meaningRev: "暴飲暴食、極端な思考、アンバランス、不調和", locationUp: "静かなティールーム、調合室、温泉、川のほとり", locationRev: "騒々しく調和のない場所、アンバランスな宴会場", goodsUp: "水差し、デキャンタ、シェーカー、ハーブティー", goodsRev: "ひびの入ったグラス、溢れ出た液体", herbUp: "カモミール（穏やかな循環と心の調和）", herbRev: "ラベンダー（暴れ出した感情や過剰さを鎮める）" },
+            { id: 15, name: "悪魔 (The Devil)", type: "major", image: "images/major/devil.png", symbol: "執着・欲望・誘惑・囚われ・ぬるま湯", meaningUp: "依存、やめられない癖、物欲・性欲への囚われ、泥沼", meaningRev: "悪習慣からの脱却、目が覚める、鎖を断ち切る", locationUp: "ナイトクラブ、カジノ、深夜のコンビニ、居酒屋", locationRev: "禁煙・禁酒の部屋、依存から脱出した回復施設", goodsUp: "鎖、タバコ、お酒の瓶、甘いお菓子、クレジットカード", goodsRev: "切れた鎖、捨てられた吸い殻、解約通知書", herbUp: "パチュリ（欲望や現実を直視しグラウンディング）", herbRev: "レモングラス（依存の泥沼から抜け出す爽快感）" },
+            { id: 16, name: "塔 (The Tower)", type: "major", image: "images/major/tower.png", symbol: "崩壊・青天の霹靂・真実の露見・覚醒", meaningUp: "突然のハプニング、価値観の崩壊、ショック、衝撃", meaningRev: "危機一髪で回避、ジワジワとした崩壊、内面のショック", locationUp: "雷雨の屋外、避難所、解体中のビル、ハプニングの現場", locationRev: "今にも崩れそうな建物、緊迫した空気の部屋", goodsUp: "稲妻のモチーフ、非常ベル、破片、アラーム", goodsRev: "誤作動した警報機、ひび割れた壁", herbUp: "フランキンセンス（激震のあとに心を再生・鎮静させる）", herbRev: "メリッサ（ショックで混乱した神経を優しくなだめる）" },
+            { id: 17, name: "星 (The Star)", type: "major", image: "images/major/star.png", symbol: "希望・インスピレーション・目標・心の平和", meaningUp: "理想の発見、希望の光、才能の開花、美意識", meaningRev: "高望み、理想が高すぎる、失望、自己肯定感の低下", locationUp: "プラネタリウム、星空が見える丘、泉、綺麗なバスルーム", locationRev: "曇り空で見えない夜空、光の届かない部屋", goodsUp: "星のモチーフ、アロマスプレー、水差し、クリスタル", goodsRev: "くすんだアクセサリー、空っぽのスプレー容器", herbUp: "クラリセージ（夢と希望を描くインスピレーション）", herbRev: "ベルガモット（自信を失った心に光を灯す）" },
+            { id: 18, name: "月 (The Moon)", type: "major", image: "images/major/moon.png", symbol: "不安・曖昧・胸騒ぎ・潜在意識・迷い", meaningUp: "先が見えない不安、錯覚、胸騒ぎ、不透明な状況", meaningRev: "不安の解消、霧が晴れる、隠されていた真実の発覚", locationUp: "月夜の海辺、霧の立ち込める道、暗い路地裏", locationRev: "朝もやが晴れる道、夜明けの景色", goodsUp: "月のモチーフ、姿見（鏡）、ナイトランプ", goodsRev: "霧吹き、明るい懐中電灯", herbUp: "サンダルウッド/白檀（不安や幻影を静め、心を鎮定）", herbRev: "ローズマリー（頭をクリアにし、不透明さを払う）" },
+            { id: 19, name: "太陽 (The Sun)", type: "major", image: "images/major/sun.png", symbol: "祝福・成功・天真爛漫・あふれる活力", meaningUp: "輝かしい成功、ありのままの自分、祝福、健康、喜び", meaningRev: "一時的な陰り、不機嫌、日焼け（やりすぎ）、子供っぽさ", locationUp: "太陽が降り注ぐビーチ、公園、幼稚園、フェス会場", locationRev: "日陰、日差しが強すぎて眩しすぎる場所", goodsUp: "太陽のモチーフ、ひまわり、麦わら帽子、フラッグ", goodsRev: "壊れたサングラス、しおれたひまわり", herbUp: "スイートオレンジ（心からの喜びと陽気なエネルギー）", herbRev: "グレープフルーツ（陰った気分をサッと明るく持ち上げる）" },
+            { id: 20, name: "審判 (Judgement)", type: "major", image: "images/major/judgement.png", symbol: "復活・再起・報われ・覚醒・奇跡のチャンス", meaningUp: "過去の努力が報われる、再会、劇的な復活、チャンス", meaningRev: "過去への執着、不採用、再起不能の思い込み、後悔", locationUp: "復活ライブの会場、同窓会、合格発表の場", locationRev: "諦めきれない現場、不合格通知の届く部屋", goodsUp: "トランペット、通知表、合格証書、メッセージカード", goodsRev: "返信の来ないスマホ、破り捨てられた通知書", herbUp: "ローズマリー（眠っていた魂と記憶を呼び覚ます）", herbRev: "タイム（過去の後悔を断ち切り、再挑戦する勇気）" },
+            { id: 21, name: "世界 (The World)", type: "major", image: "images/major/world.png", symbol: "完成・統合・完璧な調和・ゴール・次のステージへ", meaningUp: "完全なる成功、目標達成、最高のハッピーエンド、統合", meaningRev: "未完成、あと一歩届かない、中途半端、スランプ", locationUp: "グランドフィナーレのステージ、地球儀のある部屋", locationRev: "あと1ピース足りないパズルのある部屋", goodsUp: "月桂樹の輪、地球儀、完成した作品、卒業証書", goodsRev: "未完成の絵画、欠けたパーツ", herbUp: "ローズ（最高の満たされ感と愛の完成）", herbRev: "カルダモン（あと一歩を突破するラストスパートの力）" }
         ];
 
-        // Minor Arcana (56 cards) - images/minor/...
-        const minorSuits = [
-            { folder: "wands", name: "ワンド", symbol: "燃え盛る杖・炎", herb: "ジンジャー、シナモン", goods: "カラーペン、付箋" },
-            { folder: "cups", name: "カップ", symbol: "聖杯・水", herb: "カモミール、ラベンダー", goods: "ティーカップ、アロマ" },
-            { folder: "swords", name: "ソード", symbol: "剣・風", herb: "ユーカリ、ペパーミント", goods: "シャープペン、ハサミ" },
-            { folder: "pentacles", name: "ペンタクル", symbol: "金貨・土", herb: "パチュリ、シナモン", goods: "財布、スケジュール帳" }
+        // Minor Arcana - Cups (14 cards) with detailed user prompt specifications
+        const cupCardsData = [
+            { file: "ace", name: "カップのエース (Ace of Cups)", theme: "溢れ出る愛・感情の始まり・心の満たされ", 
+              upMeaning: "愛の芽生え、寛容さ、心の満たされ、情熱の始まり", revMeaning: "感情の空回り、不満、心を閉ざす、愛の枯渇",
+              upLoc: "湧き水のある場所、綺麗な水辺、噴水のある公園", revLoc: "湿気の多い暗い部屋、水回りの詰まった場所",
+              upGoods: "綺麗なグラス、聖水器、手紙・メッセージカード", revGoods: "ひびの入ったコップ、使い捨てカップ",
+              upHerb: "ローズ（愛と感情を開く）", revHerb: "メリッサ/レモンバーム（落ち込んだ心を癒やす）" },
+            { file: "2", name: "カップの2 (Two of Cups)", theme: "1対1の調和・絆・パートナーシップ", 
+              upMeaning: "相互理解、愛の誓い、意気投合、協力関係", revMeaning: "擦れ違い、不協和音、依存関係、別れや距離",
+              upLoc: "静かなカフェ、2人きりのデートスポット、契約の場", revLoc: "意見が食い違う会議室、賑やかすぎる騒々しい場所",
+              upGoods: "ペアグラス、乾杯のワイン、結婚指輪", revGoods: "片方なくしたピアス/手袋、壊れたペアグッズ",
+              upHerb: "ジャスミン（魅力を高め絆を深める）", revHerb: "ラベンダー（逆立った感情を鎮める）" },
+            { file: "3", name: "カップの3 (Three of Cups)", theme: "祝福・友情・コミュニティの喜び", 
+              upMeaning: "乾杯、仲間との共有、吉報、賑やかな楽しさ", revMeaning: "飲みすぎ・羽目の外しすぎ、三角関係、グループの不和",
+              upLoc: "パーティー会場、居酒屋、歓楽街、賑やかなカフェ", revLoc: "散らかった宴会跡、グループから浮いてしまう場所",
+              upGoods: "シャンパングラス、クラッカー、お祝いのギフト", revGoods: "飲み残しの缶、パーティーのゴミ",
+              upHerb: "ペパーミント（場の空気を活気付ける）", revHerb: "カモミール（過剰な興奮や胃腸を休める）" },
+            { file: "4", name: "カップの4 (Four of Cups)", theme: "停滞・マンネリ・差し出されたチャンスへのスルー", 
+              upMeaning: "退屈、オファーを見落とす、内省、現状への不満", revMeaning: "新しい気づき、やる気の再燃、受け入れる姿勢",
+              upLoc: "木陰、静かな自分の部屋、退屈な待ち合い室", revLoc: "新しい扉が開く場所、風通しの良いベランダ",
+              upGoods: "ブラインド、腕組み、未開封の手紙", revGoods: "新しい手帳、受け取るためのトレイ",
+              upHerb: "ローゼル/ハイビスカス（停滞した気分を刷新）", revHerb: "ローズマリー（頭脳と感覚をクリアにする）" },
+            { file: "5", name: "カップの5 (Five of Cups)", theme: "喪失感・後悔・残されたものへの気づき", 
+              upMeaning: "失望、悲しみ、失ったものへの執着、不運", revMeaning: "再起、切り替え、残された希望に目を向ける",
+              upLoc: "雨の日の街角、寂れた橋の下、お墓や思い出の地", revLoc: "虹が見える場所、リスタートを切る駅",
+              upGoods: "黒いコート、こぼれたワイン、ティッシュ", revGoods: "頑丈な靴、前に進むためのバッグ",
+              upHerb: "ミルラ/没薬（深い悲しみを癒やす）", revHerb: "オレンジフラワー/ネロリ（前向きな明るさを与える）" },
+            { file: "6", name: "カップの6 (Six of Cups)", theme: "ノスタルジー・純粋な思い出・好意の受け渡し", 
+              upMeaning: "過去の思い出、無邪気さ、再会、純粋なギフト", revMeaning: "過去への執着・溺れる、現実逃避、成長の拒否",
+              upLoc: "実家、通っていた学校、公園、古風な街並み", revLoc: "埃かぶった物置、ノスタルジーに浸りすぎる部屋",
+              upGoods: "アルバム、ドライフラワー、オルゴール、昔のおもちゃ", revGoods: "カビの生えた古い写真、期限切れのチケット",
+              upHerb: "エルダーフラワー（温もりと優しさを思い出す）", revHerb: "タイム（現実と戦う勇気を取り戻す）" },
+            { file: "7", name: "カップの7 (Seven of Cups)", theme: "妄想・選択肢の多さ・夢物語", 
+              upMeaning: "選択肢が多すぎる、幻想、理想ばかり追う、目移り", revMeaning: "現実を見つめ直す、目標の絞り込み、目が覚める",
+              upLoc: "アミューズメントパーク、仮想空間（VR）、映画館", revLoc: "整理整頓されたデスク、シンプルな部屋",
+              upGoods: "万華鏡、宝くじ、VRゴーグル、ドリームキャッチャー", revGoods: "TODOリスト、電卓、スケール",
+              upHerb: "クラリセージ（直感と夢を広げる）", revHerb: "セージ（幻想を払い、現実的な視点をもたらす）" },
+            { file: "8", name: "カップの8 (Eight of Cups)", theme: "価値観の転換・立ち去る・新しい探求", 
+              upMeaning: "潮時を悟る、過去を捨てて進む、次のステージへ", revMeaning: "未練で去れない、諦めきれない、舞い戻る",
+              upLoc: "月夜の山道、寂れたハイキングコース、空港", revLoc: "引き返したくなる道、足留めされる待合室",
+              upGoods: "杖、ウォーキングシューズ、シンプルなリュックサック", revGoods: "重すぎるスーツケース、投げ出された道具",
+              upHerb: "サイプレス（変化を受け入れ、未練を断つ）", revHerb: "マジョラム（不安を和らげ温もりを与える）" },
+            { file: "9", name: "カップの9 (Nine of Cups)", theme: "願望成就（ウィッシュカード）・個人的な満足・誇り", 
+              upMeaning: "夢が叶う、満ち足りた心、自己満足、ご褒美", revMeaning: "贅沢すぎる、自慢気、自己中心的、見た目だけの満足",
+              upLoc: "高級レストラン、個展の会場、自分のサロン", revLoc: "散ラシた高級品店、満足感のないパーティー",
+              upGoods: "美味しいごちそう、トロフィー、ふかふかのクッション", revGoods: "食べ残しの皿、見せびらかすための宝石",
+              upHerb: "バニラ（甘い満たされ感と幸福感）", revHerb: "フェンネル（消化不良や自己肥大を抑える）" },
+            { file: "10", name: "カップの10 (Ten of Cups)", theme: "永続的な幸せ・家庭円満・調和した環境", 
+              upMeaning: "平和な家庭、愛の完成、最高の幸福、心の平穏", revMeaning: "家庭内の不和、価値観の違い、表面上の平和",
+              upLoc: "虹がかかる庭、マイホーム、家族が集まるリビング", revLoc: "ギクシャクした実家、形だけの集まり",
+              upGoods: "ファミリーフォト、虹のモチーフ、ホームメイドケーキ", revGoods: "ひびの入った食器セット、仮面夫婦の寝室",
+              upHerb: "リンデン/ボダイジュ（家庭の平和と包容力）", revHerb: "セントジョーンズワート（心の中に光を取り戻す）" },
+            { file: "page", name: "カップのページ (Page of Cups)", theme: "ピュアな感性・インスピレーション・愛のメッセージ", 
+              upMeaning: "豊かな想像力、愛らしい知らせ、芸術的センス", revMeaning: "幼さ、感情的になりやすい、甘え、現実逃避",
+              upLoc: "水族館、イラスト教室、ポエムの朗読会", revLoc: "散らかった子供部屋、感情的なSNSのタイムライン",
+              upGoods: "スケッチブック、水彩絵の具、可愛いメモ帳", revGoods: "泣き濡れたハンカチ、妄想ノート",
+              upHerb: "ミルテ/天人花（純粋な愛と若々しさ）", revHerb: "パチュリ（浮ついた心をグラウンディングさせる）" },
+            { file: "knight", name: "カップのナイト (Knight of Cups)", theme: "夢追い人・プロポーズ・ロマンチスト", 
+              upMeaning: "魅惑的な提案、ロマンチックなアプローチ、平和的", revMeaning: "口先だけ、気まぐれ、理想が高すぎる、詐欺的",
+              upLoc: "詩的なカフェ、コンサートホール、デートコース", revLoc: "浮ついたナイトクラブ、甘い話が飛び交う場所",
+              upGoods: "一輪の花束、ラブソング、招待状", revGoods: "メッキの剥がれたアクセサリー、白紙の契約書",
+              upHerb: "イランイラン（情熱とロマンチックな魅力）", revHerb: "サンダルウッド/白檀（惑わされず心を静める）" },
+            { file: "queen", name: "カップのクイーン (Queen of Cups)", theme: "慈愛・深い共感力・直感・包容力", 
+              upMeaning: "豊かな母性、相手に寄り添う心、強い直感、癒やし", revMeaning: "感情過多、ヒステリック、被害妄想、過保護",
+              upLoc: "ヒーリングサロン、波打ち際、居心地の良いリビング", revLoc: "感情が渦巻く相談室、暗く閉ざされた部屋",
+              upGoods: "アロマディフューザー、天然石（ムーンストーン）、レース", revGoods: "涙で濡れた枕、感情的に書いた日記",
+              upHerb: "フランキンセンス（心の深層と繋がり癒やす）", revHerb: "ベチバー（過多な感情を地面につなぎ留める）" },
+            { file: "king", name: "カップのキング (King of Cups)", theme: "感情のコントロール・寛大さ・包容力のある指導者", 
+              upMeaning: "穏やかな心、成熟した優しさ、包容力、感情の安定", revMeaning: "双極的な感情、不誠実、優柔不断、冷酷な仮面",
+              upLoc: "静かな船上、信頼できるカウンセリングルーム", revLoc: "偽りの平穏を保つ部屋、酒に溺れるバー",
+              upGoods: "重厚な木製デスク、高級茶葉、万年筆", revGoods: "空の酒瓶、偽りの微笑みの仮面",
+              upHerb: "シダーウッド（ブレない芯と大きな安心感）", revHerb: "ペパーミント（不誠実な澱みをスッキリ払う）" }
         ];
-        const minorRanks = [
-            { rank: "エース", file: "ace" },
-            { rank: "2", file: "2" },
-            { rank: "3", file: "3" },
-            { rank: "4", file: "4" },
-            { rank: "5", file: "5" },
-            { rank: "6", file: "6" },
-            { rank: "7", file: "7" },
-            { rank: "8", file: "8" },
-            { rank: "9", file: "9" },
-            { rank: "10", file: "10" },
-            { rank: "ペイジ", file: "page" },
-            { rank: "ナイト", file: "knight" },
-            { rank: "クイーン", file: "queen" },
-            { rank: "キング", file: "king" }
+
+        // Minor Arcana - Wands (14 cards) with detailed user specifications
+        const wandCardsData = [
+            { file: "ace", name: "ワンドのエース (Ace of Wands)", theme: "情熱の点火・新しい挑戦・インスピレーション",
+              upMeaning: "意欲の湧出、ひらめき、冒険の始まり、強い生命力", revMeaning: "計画倒れ、やる気の空回り、途中で冷める、不発",
+              upLoc: "スタートアップのオフィス、スポーツジム、工房", revLoc: "不発に終わった現場、火の気のない冷えた部屋",
+              upGoods: "チャッカマン、ライター、新しいスパイク、苗木", revGoods: "湿気たマッチ、折れた鉛筆、電池切れの機器",
+              upHerb: "ジンジャー/生姜（情熱とエネルギーを燃やす）", revHerb: "シナモン（冷えた心とやる気を温め直す）" },
+            { file: "2", name: "ワンドの2 (Two of Wands)", theme: "野望・次のステージへの計画・世界を視野に入れる",
+              upMeaning: "展望を広げる、海外や遠方への意識、順調なステップ", revMeaning: "選択に迷う、スケールが小さくなる、内弁慶",
+              upLoc: "展望台、屋上、空港のロビー、高層ビル", revLoc: "狭い部屋、選択肢が狭まる行き止まりの道",
+              upGoods: "地球儀、世界地図、双眼鏡、パスポート", revGoods: "サイズの合わない靴、破れた地図",
+              upHerb: "カルダモン（視野を広げ、突破力を与える）", revHerb: "ペパーミント（迷った頭をスッキリさせる）" },
+            { file: "3", name: "ワンドの3 (Three of Wands)", theme: "船出・成果の広がり・次の展開への期待",
+              upMeaning: "順調な進行、協力者の登場、未来への自信、展開", revMeaning: "遅延、見通しの甘さ、思い通りに進まない",
+              upLoc: "港、出港を待つ船上、物流拠点、新路線の駅", revLoc: "足止めを食らうターミナル、立ち往生する道",
+              upGoods: "コンパス（方位磁石）、双眼鏡、出荷箱", revGoods: "止まった腕時計、キャンセルチケット",
+              upHerb: "ブラックペッパー（行動力と前進の勢いを与える）", revHerb: "グレープフルーツ（停滞感を吹き飛ばす）" },
+            { file: "4", name: "ワンドの4 (Four of Wands)", theme: "平和・安らぎ・ひと休みの祝福・ホーム",
+              upMeaning: "ひと段落、安心できる居場所、調和、結婚・お祝い", revMeaning: "一時的な不和、準備不足のパーティ、落ち着かない",
+              upLoc: "結婚式場、新居、アットホームなカフェ、実家", revLoc: "飾りつけの途中で放置された部屋、騒々しい宿",
+              upGoods: "リース、ガーランド、ウェルカムボード", revGoods: "片付け途中の段ボール、破れた飾り",
+              upHerb: "スイートオレンジ（温かな安らぎと安心感）", revHerb: "マジョラム（不安な気持ちを包み込んで鎮める）" },
+            { file: "5", name: "ワンドの5 (Five of Wands)", theme: "葛藤・切磋琢磨・議論・競い合い",
+              upMeaning: "意見のぶつかり合い、ライバル、切磋琢磨、不和", revMeaning: "不必要な争い、疲弊、うやむやな決着、内乱",
+              upLoc: "武道場、ディベート大会の会場、競技場", revLoc: "不正が横行する場、疲れるだけの不毛な会議",
+              upGoods: "スポーツのユニフォーム、グローブ、メガホン", revGoods: "壊れた審判の笛、散らかった用具箱",
+              upHerb: "ユーカリ（興奮を整理し、頭をクリアにする）", revHerb: "カモミール（ぶつかり合って疲れた感情を和らげる）" },
+            { file: "6", name: "ワンドの6 (Six of Wands)", theme: "勝利・誇らしい成果・承認・栄光のパレード",
+              upMeaning: "勝利をつかむ、称賛される、自信、リーダーシップ", revMeaning: "敗北、誇り高ぶる、期待外れ、横取りされる",
+              upLoc: "表彰台、パレードの通り、ステージ、受賞会場", revLoc: "誰もいない表彰台、観客のいないグラウンド",
+              upGoods: "月桂冠、トロフィー、賞状、フラッグ", revGoods: "色あせたリボン、壊れたメダル",
+              upHerb: "ローレル/月桂樹（勝利と栄光をもたらす）", revHerb: "ローズマリー（挫折から立ち直る自信を取り戻す）" },
+            { file: "7", name: "ワンドの7 (Seven of Wands)", theme: "優位な立場での防衛・孤軍奮闘・立場を守る",
+              upMeaning: "打ち勝つ、自分の主張を守る、優勢、踏ん張り", revMeaning: "圧倒される、諦める、守りきれない、降伏",
+              upLoc: "高台、砦、プレゼンテーションの壇上", revLoc: "囲み取材の場、追い詰められた狭い角",
+              upGoods: "盾、ヘルメット、防護ネット、プラカード", revGoods: "折れた杖、脱ぎ捨てられた靴",
+              upHerb: "タイム（困難に立ち向かう勇気と忍耐）", revHerb: "レモングラス（諦めかけた心に再び喝を入れる）" },
+            { file: "8", name: "ワンドの8 (Eight of Wands)", theme: "急展開・ハイスピード・メッセージの到来",
+              upMeaning: "スピーディな変化、トントン拍子、吉報が届く", revMeaning: "遅延、コントロール不能、焦りすぎによる失敗",
+              upLoc: "滑走路、高速道路、通信基地、SNSのタイムライン", revLoc: "渋滞している道路、電波の届かない場所",
+              upGoods: "矢、スマートフォン、飛行機のチケット", revGoods: "未読スルーの通知、通信エラー画面",
+              upHerb: "ペパーミント（一気に加速するエネルギー）", revHerb: "ラベンダー（焦ってパニックになった心を落ち着かせる）" },
+            { file: "9", name: "ワンドの9 (Nine of Wands)", theme: "警戒・準備万端・過去の痛みに備える",
+              upMeaning: "最終防衛線、警戒心、備えあれば憂いなし、粘り強さ", revMeaning: "防御の限界、疑心暗鬼、疲れ果てる、隙ができる",
+              upLoc: "警備室、防犯カメラのある場所、壁で囲まれた敷地", revLoc: "鍵の壊れた扉、無防備な入り口",
+              upGoods: "包帯、防犯グッズ、鍵、フェンス", revGoods: "ガタガタの防護柵、電池切れの防犯ブザー",
+              upHerb: "クローブ/丁子（守護の力と意志の強さ）", revHerb: "セントジョーンズワート（疲れ果てた心身を補修する）" },
+            { file: "10", name: "ワンドの10 (Ten of Wands)", theme: "重圧・限界・抱え込みすぎ・責任感",
+              upMeaning: "キャパオーバー、プレッシャー、全部自分でやる", revMeaning: "手放す、ギブアップ、重荷からの解放、限界突破",
+              upLoc: "過密スケジュールの現場、荷物でいっぱいの倉庫", revLoc: "荷物を下ろしたベンチ、断捨離後の部屋",
+              upGoods: "重いスーツケース、山積みの書類、キャリーカート", revGoods: "ごみ袋、委任状、解放された手",
+              upHerb: "ユーカリ・グロブルス（重圧から呼吸を楽にする）", revHerb: "フランキンセンス（肩の荷を下ろし心を解放する）" },
+            { file: "page", name: "ワンドのページ (Page of Wands)", theme: "好奇心旺盛・冒険心・ワクワクするニュース",
+              upMeaning: "意欲的な若者、朗報、新しい興味、無邪気な情熱", revMeaning: "無計画、飽き性、あやしい話に飛びつく、落ち着きがない",
+              upLoc: "新規習い事教室、キャンプ場、オープンイベント", revLoc: "散らかしっぱなしの子供部屋、集中できない空間",
+              upGoods: "リュックサック、スニーカー、探検グッズ", revGoods: "三日坊主のノート、使いかけの教材",
+              upHerb: "ベルガモット（フレッシュなワクワク感を引き出す）", revHerb: "パチュリ（気まぐれな心を地に足つけさせる）" },
+            { file: "knight", name: "ワンドのナイト (Knight of Wands)", theme: "突撃・情熱的な行動力・チャレンジ精神",
+              upMeaning: "即実行、果敢な挑戦、熱血漢、スピード感", revMeaning: "暴走、短気、強引すぎる、長続きしない",
+              upLoc: "サーキット場、競馬場、活気のある営業先", revLoc: "事故現場、勢いだけで乗り込んでトラブルになる場所",
+              upGoods: "バイク、ライダースジャケット、スポーツカー", revGoods: "スピード違反の切符、壊れたブレーキ",
+              upHerb: "ブラックペッパー（野性とスピード感を与える）", revHerb: "メリッサ（頭に血が上った状態を冷却する）" },
+            { file: "queen", name: "ワンドのクイーン (Queen of Wands)", theme: "明るさ・姉御肌・魅力的な自信・ポジティブ",
+              upMeaning: "華やか、周りを元気にする、自信家、独立心", revMeaning: "わがまま、支配的、嫉妬深い、見栄を張る",
+              upLoc: "太陽が差し込むテラス、ライブステージ、賑やかなサロン", revLoc: "派手だがマウントの取り合いが起きるパーティ",
+              upGoods: "ひまわり、派手なアクセサリー、サングラス", revGoods: "派手すぎる化粧品、割れた鏡",
+              upHerb: "ローズマリー（前向きな輝きと強い意志）", revHerb: "ゼラニウム（情緒の激しさを穏やかに調整する）" },
+            { file: "king", name: "ワンドのキング (King of Wands)", theme: "カリスマ性・リーダーシップ・起業家精神・確固たる意志",
+              upMeaning: "統率力、ビジネスでの成功、頼りになる指導者", revMeaning: "独裁的、ワンマン、傲慢、頑固",
+              upLoc: "社長室、本部、大きなプロジェクトの指揮現場", revLoc: "ワンマン経営の現場、意見が言えないワンマンな職場",
+              upGoods: "認印・社印、重厚な革張りの椅子、パイプ", revGoods: "独断で出された指示書、権力を振りかざす書類",
+              upHerb: "シダーウッド（揺るぎないリーダーシップと軸）", revHerb: "サンダルウッド（傲慢さを抑え寛大さを呼び戻す）" }
         ];
-        
+
         let cardIdCounter = 22;
-        minorSuits.forEach(suit => {
-            minorRanks.forEach(r => {
-                tarotCards.push({
-                    id: cardIdCounter++,
-                    name: `${suit.name}の${r.rank}`,
-                    type: "minor",
-                    image: `images/minor/${suit.folder}/${r.file}.png`,
-                    symbol: `${suit.symbol}を持つ${r.rank}`,
-                    meaning: `${suit.name}のエネルギーが${r.rank}の性質として仕事やプロジェクトに発揮される時期。`,
-                    location: `${suit.name}に対応する作業エリア・デスク周辺`,
-                    goods: suit.goods,
-                    herb: suit.herb
-                });
+
+        // Register Cups
+        cupCardsData.forEach(c => {
+            tarotCards.push({
+                id: cardIdCounter++,
+                name: c.name,
+                type: "minor",
+                suit: "cups",
+                image: `images/minor/cups/${c.file}.png`,
+                symbol: `カップのエネルギー (${c.theme})`,
+                meaningUp: c.upMeaning,
+                meaningRev: c.revMeaning,
+                locationUp: c.upLoc,
+                locationRev: c.revLoc,
+                goodsUp: c.upGoods,
+                goodsRev: c.revGoods,
+                herbUp: c.upHerb,
+                herbRev: c.revHerb
+            });
+        });
+
+        // Register Wands
+        wandCardsData.forEach(w => {
+            tarotCards.push({
+                id: cardIdCounter++,
+                name: w.name,
+                type: "minor",
+                suit: "wands",
+                image: `images/minor/wands/${w.file}.png`,
+                symbol: `ワンドのエネルギー (${w.theme})`,
+                meaningUp: w.upMeaning,
+                meaningRev: w.revMeaning,
+                locationUp: w.upLoc,
+                locationRev: w.revLoc,
+                goodsUp: w.upGoods,
+                goodsRev: w.revGoods,
+                herbUp: w.herbUp,
+                herbRev: w.herbRev
+            });
+        });
+
+        // Minor Arcana - Swords (14 cards)
+        const swordCardsData = [
+            { file: "ace", name: "ソードのエース (Ace of Swords)", theme: "強い意志・問題の解決・真実の発見・クリアな頭脳",
+              upMeaning: "強い意志、問題の解決、真実の発見、クリアな頭脳", revMeaning: "誤解、決断の失敗、冷酷さ、思考の混乱",
+              upLoc: "裁判所、病院の外科手術室、見晴らしの良い丘", revLoc: "混乱した会議室、誤情報が飛び交う場所",
+              upGoods: "ペーパーナイフ、鏡、メス、シャープな万年筆", revGoods: "刃の欠けたナイフ、錆びたハサミ",
+              upHerb: "ローズマリー（冴え渡る頭脳と集中力）", revHerb: "ラベンダー（鋭すぎる思考で興奮した神経を鎮める）" },
+            { file: "2", name: "ソードの2 (Two of Swords)", theme: "平衡・心の閉鎖・ジレンマ・葛藤",
+              upMeaning: "感情を抑えたバランス維持、冷静な判断の保留、真実への一時的な目隠し", revMeaning: "偽りの均衡の破綻、決断を迫られる、隠されていた真実の発覚",
+              upLoc: "波静かな海岸、静寂の会議室、目隠しがされた暗室", revLoc: "嵐の吹き荒れる海辺、パニック状態のオフィス",
+              upGoods: "目隠し用アイマスク、クロスさせたペーパーナイフ、ガラス細工", revGoods: "破れたアイマスク、壊れたシールド",
+              upHerb: "クラリセージ（頭脳をクリアにし直感を研ぎ澄ます）", revHerb: "カモミール（張り詰めた緊張をほぐす）" },
+            { file: "3", name: "ソードの3 (Three of Swords)", theme: "傷心・裏切り・批判・切ない真実",
+              upMeaning: "傷心、辛い決定、批判を受ける、事実の受容", revMeaning: "過去の傷からの回復、少しずつ和らぐ苦しみ、トラウマの克服",
+              upLoc: "雨の降る街角、手当を受ける処置室、失意の場所", revLoc: "日の差してきた病室、リハビリテーションルーム",
+              upGoods: "ハートのモチーフ、絆創膏、ハサミ", revGoods: "処方箋、包帯、解熱剤",
+              upHerb: "メリッサ/レモンバーム（傷ついた心を温かく包み込む）", revHerb: "ユーカリ（滞った負の感情を浄化する）" },
+            { file: "4", name: "ソードの4 (Four of Swords)", theme: "休息・充電・一時的な撤退・内省",
+              upMeaning: "メンタル休養、エネルギー充電、静養、次の戦略練り直し", revMeaning: "行動開始の時、長い眠りからの目覚め、停滞からの復帰",
+              upLoc: "静かなベッドルーム、病室、静寂に包まれた教会", revLoc: "目覚ましが鳴る部屋、再始動のオフィス",
+              upGoods: "アイマスク、耳栓、快適な枕、祈りのキャンドル", revGoods: "目覚まし時計、栄養ドリンク、仕事用カレンダー",
+              upHerb: "ラベンダー（深い休息と睡眠を促す）", revHerb: "ペパーミント（目覚めを爽やかに促す）" },
+            { file: "5", name: "ソードの5 (Five of Swords)", theme: "勝敗・身勝手な勝利・後味の悪い決着",
+              upMeaning: "手段を選ばない勝利、利益重視の割り切り、虚しい勝利", revMeaning: "無駄な争いの放棄、和解の兆し、敗北を認めて進む",
+              upLoc: "荒涼とした戦場跡、口論があった会議室", revLoc: "和解のための円卓、仲裁の入る相談室",
+              upGoods: "奪った刀剣、鍵のかかったボックス", revGoods: "白旗、仲裁書面、手渡されたお見舞い",
+              upHerb: "ティーツリー（棘のある殺伐とした気分を清める）", revHerb: "ゼラニウム（乱れた感情の調和を取り戻す）" },
+            { file: "6", name: "ソードの6 (Six of Swords)", theme: "新天地へ渡る・問題からの離脱・静かな移行",
+              upMeaning: "トラブルからの退避、次の段階への移動、静かな再出発", revMeaning: "問題から逃げ切れない、足止め、立ち往生、進展の遅れ",
+              upLoc: "静かな川を渡る船、フェリー乗り場、移動中の車内", revLoc: "座礁した船の上、足留めされたターミナル",
+              upGoods: "フェリーの乗船券、旅のガイドブック、杖", revGoods: "壊れたオール、紛失したチケット",
+              upHerb: "サイプレス（スムーズな変化と新しい道の支援）", revHerb: "ジンジャー（滞った前進の意欲を温める）" },
+            { file: "7", name: "ソードの7 (Seven of Swords)", theme: "策略・要領のよさ・不誠実・リスク回避",
+              upMeaning: "抜け道を探す、裏技・テクニックの活用、隠密行動", revMeaning: "不正の発覚、策におぼれる、素直なアプローチへの転換",
+              upLoc: "監視カメラの死角、人目のない裏路地、極秘裏のプロジェクト部屋", revLoc: "明るく暴露される公開会場、監査室",
+              upGoods: "暗号化されたUSB、鍵、変装グッズ、隠しポケット", revGoods: "警告文、解読されたコード、オープンな掲示板",
+              upHerb: "バジル（頭脳の回転を高め危機を回避する）", revHerb: "フランキンセンス（隠し事のないクリアな精神へ導く）" },
+            { file: "8", name: "ソードの8 (Eight of Swords)", theme: "束縛・自己限定・思い込みの檻・自由の奪取",
+              upMeaning: "思い込みによる身動きの取れなさ、孤立感、身動きが取れない制限", revMeaning: "解放、縛りからの脱出、視野の広がり、解決策の発見",
+              upLoc: "囲まれたフェンスの内側、身動きが取れない狭い個室", revLoc: "開かれた扉の前、開放感のある広場",
+              upGoods: "ロープ、包帯、解錠用ツール", revGoods: "ハサミ、鍵、開放されたドアノブ",
+              upHerb: "ジュニパーベリー（思考のブロックを砕き浄化する）", revHerb: "レモン（曇った頭脳と視野をスッキリさせる）" },
+            { file: "9", name: "ソードの9 (Nine of Swords)", theme: "苦悩・夜も眠れぬ不安・過度な心配",
+              upMeaning: "取り越し苦労、深い不安や罪悪感、不眠、メンタルの限界", revMeaning: "悪夢からの目覚め、不安の解消、現実的な解決策の見出し",
+              upLoc: "深夜のベッドの上、頭を抱える暗い自室", revLoc: "朝日が差し込む窓辺、安心できる場所",
+              upGoods: "ハンカチ、睡眠導入グッズ、ノート（悩みの書き出し用）", revGoods: "朝日、リフレッシュスプレー、白紙のノート",
+              upHerb: "カモミール（夜の深い不安を優しく和らげる）", revHerb: "ベルガモット（どんよりした気分をパッと明るくする）" },
+            { file: "10", name: "ソードの10 (Ten of Swords)", theme: "大打撃・底を打つ・最悪の終わりからの再生",
+              upMeaning: "完全なる終了、どん底状態、これ以上悪くならない状態、引導を渡される", revMeaning: "最悪期の脱出、劇的な回復、リスタート、夜明け",
+              upLoc: "どん底を感じる場所、夜明け前の静けさのある場所", revLoc: "朝日の昇る地平線、回復期のベッドサイド",
+              upGoods: "傷の手当てセット、完全終了の書類、夜明けの時計", revGoods: "新しいスケジュール帳、朝日の写真",
+              upHerb: "フランキンセンス（どん底からの精神的再生）", revHerb: "ローズマリー（新しい日のスタートへ意欲を与える）" },
+            { file: "page", name: "ソードのページ (Page of Swords)", theme: "警戒心・情報収集・鋭い観察眼・準備",
+              upMeaning: "慎重なリサーチ、情報収集、分析力、鋭い鋭気", revMeaning: "疑心暗鬼、皮肉屋、準備不足、根拠のない噂話",
+              upLoc: "風の吹き抜ける高台、リサーチデスク、データ分析室", revLoc: "風が強すぎて立ち乱れる場所、デマの飛び交うネット掲示板",
+              upGoods: "双眼鏡、検索ツール、セキュリティソフト", revGoods: "誤ったデータ、誤情報、故障したアナライザー",
+              upHerb: "ユーカリ（鋭い観察力とクリアな視界を与える）", revHerb: "パチュリ（疑い深い心を大地に安定させる）" },
+            { file: "knight", name: "ソードのナイト (Knight of Swords)", theme: "急進・論理的な突破・果敢な決断・スピード",
+              upMeaning: "迅速な問題解決、迷いのない実行力、論理的な説得", revMeaning: "無謀な突進、攻撃的な言動、冷酷すぎる批判、単細胞な行動",
+              upLoc: "風を切って進む直線道路、緊急対策室、論戦の場", revLoc: "言動でトラブルになる激論の場、事故現場",
+              upGoods: "研ぎ澄まされた刃、ハイスペックPC、速達封筒", revGoods: "折れた刀、乱暴に書かれた批判メッセージ",
+              upHerb: "ペパーミント（一刀両断の鋭い集中力と決断力）", revHerb: "ラベンダー（攻撃的で尖りすぎた神経を鎮める）" },
+            { file: "queen", name: "ソードのクイーン (Queen of Swords)", theme: "自立・知性・厳格・客観的な洞察",
+              upMeaning: "冷静沈着な判断、公私混同のない客観性、賢明な指導", revMeaning: "批判的で冷酷、感情の遮断、批判ばかりで孤独",
+              upLoc: "厳粛な裁判所、整然とした執務室、1人の書斎", revLoc: "冷たい風が吹く孤独な空間、ギスギスした職場",
+              upGoods: "ペーパーナイフ、ロザリオ、整理されたファイル", revGoods: "刃の鋭すぎるハサミ、冷え切ったお茶",
+              upHerb: "ローズマリー（ブレない知性と冷静さを保つ）", revHerb: "イランイラン（冷え切った心に優しさと温もりを取り戻す）" },
+            { file: "king", name: "ソードのキング (King of Swords)", theme: "権威・論理的リーダーシップ・公正な判断・プロ意識",
+              upMeaning: "揺るぎない知性、厳格な公正さ、確固たる決断力、専門知識", revMeaning: "冷酷無比、権威主義、理屈っぽい、独裁的な判断",
+              upLoc: "最高裁判所、専門機関の議長席、決定権を持つデスク", revLoc: "冷酷なリストラが進む会議室、威圧的なオフィス",
+              upGoods: "重厚な判決文、格調高い万年筆、法律書", revGoods: "冷酷な解雇通知書、不当な契約書",
+              upHerb: "ベイリーフ/月桂樹（知的権威と揺るぎない判断力）", revHerb: "サンダルウッド（角が立った理屈っぽさを和らげる）" }
+        ];
+
+        // Register Swords
+        swordCardsData.forEach(s => {
+            tarotCards.push({
+                id: cardIdCounter++,
+                name: s.name,
+                type: "minor",
+                suit: "swords",
+                image: `images/minor/swords/${s.file}.png`,
+                symbol: `ソードのエネルギー (${s.theme})`,
+                meaningUp: s.upMeaning,
+                meaningRev: s.revMeaning,
+                locationUp: s.upLoc,
+                locationRev: s.revLoc,
+                goodsUp: s.upGoods,
+                goodsRev: s.revGoods,
+                herbUp: s.herbUp,
+                herbRev: s.herbRev
+            });
+        });
+
+        // Minor Arcana - Pentacles (14 cards) with complete user specifications
+        const pentacleCardsData = [
+            { file: "ace", name: "ペンタクルのエース (Ace of Pentacles)", theme: "物質的繁栄の始まり・金運・現実的なチャンス",
+              upMeaning: "経済的チャンス、安定のスタート、実り、確実な成果", revMeaning: "投資の失敗、金銭トラブル、チャンスを逃す、赤字",
+              upLoc: "新しい銀行の窓口、新築のテナント、豊かな庭園", revLoc: "散らかった金庫、赤字続きの店舗",
+              upGoods: "新しいお財布、金貨、貯金箱、上質な革製品", revGoods: "擦り切れた財布、偽札、割れた貯金箱",
+              upHerb: "パチュリ（物質的な豊かさと富を引き寄せる）", revHerb: "レモングラス（金銭面での停滞や不運を払う）" },
+            { file: "2", name: "ペンタクルの2 (Two of Pentacles)", theme: "バランス・やりくり・柔軟なやり取り・マルチタスク",
+              upMeaning: "家計のやりくり、臨機応変な対応、楽しく両立する", revMeaning: "キャパオーバー、収支のバランス崩壊、要領が悪い",
+              upLoc: "サーカスのステージ、忙しいレジカウンター", revLoc: "慌ただしいオフィスの通路、パンク寸前のデスク",
+              upGoods: "お手玉、クレジットカード、やりくりのメモ帳", revGoods: "締め切り間近の請求書、バラバラのコイン",
+              upHerb: "ジンジャー（変化の波に乗り、バランスを保つ）", revHerb: "ラベンダー（忙しすぎて波立った神経を鎮める）" },
+            { file: "3", name: "ペンタクルの3 (Three of Pentacles)", theme: "チームワーク・職人技・評価されるスキル",
+              upMeaning: "スキルの向上、チームでの成功、正当な評価、職人", revMeaning: "チームワークの不和、技術不足、手抜き、評価されない",
+              upLoc: "建築現場、工房、職人のアトリエ、協同作業の場", revLoc: "意見が食い違う工事現場、質の低い作業場",
+              upGoods: "設計図、工具セット、資格証明書、チームのユニフォーム", revGoods: "欠陥のある道具、未完成の設計図",
+              upHerb: "サイプレス（技術を磨き、堅実な形にする）", revHerb: "ペパーミント（作業効率の低下や惰性を打破する）" },
+            { file: "4", name: "ペンタクルの4 (Four of Pentacles)", theme: "執着・守りの姿勢・貯め込む・現状維持",
+              upMeaning: "堅実な蓄財、現状維持、セキュリティ重視、手放さない", revMeaning: "浪費癖、ケチのしすぎによる損失、執着を手放す",
+              upLoc: "金庫室、堅く閉ざされた個室、高セキュリティの部屋", revLoc: "開け放たれた金庫、お金が流出していく場所",
+              upGoods: "頑丈な南京錠、通帳、貯め込んだへそくり", revGoods: "散財したレシート、投げ出された財布",
+              upHerb: "ベチバー（物質的・精神的なグラウンディング）", revHerb: "スイートオレンジ（強すぎる執着を緩め、循環させる）" },
+            { file: "5", name: "ペンタクルの5 (Five of Pentacles)", theme: "困窮・孤立・経済的/心身の冷え込み",
+              upMeaning: "金銭的ピンチ、一時的な孤立、健康不安、失業", revMeaning: "援助の申し出、経済的回復、トンネルを抜ける",
+              upLoc: "雪降る教会の外、寒々しい路上、古びたレンタルルーム", revLoc: "救いの手が差し伸べられる温かい室内",
+              upGoods: "破れたコート、松葉杖、空っぽの財布", revGoods: "暖かい毛布、医療保険証、支援金",
+              upHerb: "シナモン（冷え切った心身に温かさと希望を灯す）", revHerb: "フランキンセンス（底をついた状態から立て直す）" },
+            { file: "6", name: "ペンタクルの6 (Six of Pentacles)", theme: "ギブアンドテイク・援助・公正な分配・慈愛",
+              upMeaning: "恵みの分け前、公平な援助、チャリティ、ボーナス", revMeaning: "不当な報酬、見返りを求める貸し借り、傲慢な施し",
+              upLoc: "募金会場、寄付の窓口、フェアトレードのショップ", revLoc: "不公平な取引の場、利益が偏るオフィス",
+              upGoods: "天秤、募金箱、ギフト券、給与明細", revGoods: "借用書、返済を迫るメモ",
+              upHerb: "カモミール（優しい分け合いと安心感をもたらす）", revHerb: "タイム（不公平な関係性に正す強さ）" },
+            { file: "7", name: "ペンタクルの7 (Seven of Pentacles)", theme: "育成・見直し・長期的な投資・待つ時間",
+              upMeaning: "これまでの成果を確認する、計画の見直し、育てる", revMeaning: "努力が報われない焦り、途中で投げ出す、不作",
+              upLoc: "果樹園、農地、経過観察中のプロジェクトルーム", revLoc: "手入れのされていない荒れた畑",
+              upGoods: "じょうろ、剪定ばさみ、育成プランのグラフ", revGoods: "枯れた植物、無駄になった投資の明細",
+              upHerb: "ローズマリー（忍耐強く育てる知性と継続力）", revHerb: "レモングラス（成果が出ず腐った空気を吹き飛ばす）" },
+            { file: "8", name: "ペンタクルの8 (Eight of Pentacles)", theme: "コツコツとした努力・職人気質・スキルアップ",
+              upMeaning: "練習・鍛錬の継続、地道な作業、手仕事の成果", revMeaning: "手抜き、同じ失敗の繰り返し、頭打ち、飽き性",
+              upLoc: "勉強部屋、実習室、黙々と作業するデスク", revLoc: "集中できない雑音の多い場所、投げ出した机",
+              upGoods: "ノートとペン、教科書、プラモデル、作業着", revGoods: "途中で放置されたパズル、散らかった道具",
+              upHerb: "シダーウッド（ブレずに地道な努力を重ねる力）", revHerb: "ペパーミント（マンネリや集中力の切れを解消する）" },
+            { file: "9", name: "ペンタクルの9 (Nine of Pentacles)", theme: "優雅な自立・物質的豊かさ・個人的な達成",
+              upMeaning: "経済的自立、リッチな一人時間、洗練された贅沢", revMeaning: "見栄の浪費、孤独、維持費の負担、依存的な生活",
+              upLoc: "手入れの行き届いた庭園、高級マンションのベランダ", revLoc: "人里離れた寂しい豪邸、維持できなくなった高級店",
+              upGoods: "庭の果実、高級ワイングラス、シルクのストール", revGoods: "支払いに追われる請求書、見栄のためのブランド品",
+              upHerb: "イランイラン（豊かな自分自身を愛し、満たす）", revHerb: "フェンネル（過度な見栄や欲張りを抑える）" },
+            { file: "10", name: "ペンタクルの10 (Ten of Pentacles)", theme: "財産・ファミリービジネス・伝統・豊かな基盤",
+              upMeaning: "一族の繁栄、相続、安定した基盤、長く続く成功", revMeaning: "遺産相続トラブル、家系の衰退、借金の肩代わり",
+              upLoc: "歴史ある実家、代々続く店舗、一族の集まるリビング", revLoc: "揉めている実家、差し押さえの貼られた家",
+              upGoods: "家系図、印鑑、代々受け継がれる家宝、権利書", revGoods: "破産宣告書、差し押さえの赤紙",
+              upHerb: "フランキンセンス（世代を超えて受け継がれる確かな絆）", revHerb: "ジュニパーベリー（古いしがらみや家の因習を浄化する）" },
+            { file: "page", name: "ペンタクルのページ (Page of Pentacles)", theme: "学び・資格取得・堅実な一歩・研究心",
+              upMeaning: "勉強熱心、新しい学びの開始、実務的なニュース", revMeaning: "知識偏重で動かない、お金にルーズ、計画倒れ",
+              upLoc: "図書館、大学の講義室、資格スクールの教室", revLoc: "勉強に身が入らない部屋、散らかった参考書置き場",
+              upGoods: "参考書、資格テキスト、貯金箱の第一歩", revGoods: "開かずの参考書、期限切れの教材",
+              upHerb: "ベルガモット（学ぶ楽しさと着実な吸収力）", revHerb: "パチュリ（フワフワした学習意欲を地に足つける）" },
+            { file: "knight", name: "ペンタクルのナイト (Knight of Pentacles)", theme: "堅実・慎重・地道な前進・責任感",
+              upMeaning: "着実な歩み、信頼できる仕事ぶり、忍耐強さ", revMeaning: "停滞、頑固すぎる、融通がきかない、遅すぎる",
+              upLoc: "整備された農道、地道に生産を続ける工場", revLoc: "進まない工事現場、動かない渋滞の車内",
+              upGoods: "重い耕運機、スケジュール帳、堅実なスーツ", revGoods: "錆びた農具、古いスケジュール帳",
+              upHerb: "ブラックペッパー（地味ながらも確実に前へ進む推進力）", revHerb: "マジョラム（頑固に凝り固まった思考を和らげる）" },
+            { file: "queen", name: "ペンタクルのクイーン (Queen of Pentacles)", theme: "豊かさの管理・実業家・母性的サポート・快適さ",
+              upMeaning: "切り盛りのうまさ、豊かな暮らし、面倒見の良さ", revMeaning: "浪費家、過干渉、物質主義に偏る、家事の放棄",
+              upLoc: "綺麗に整理されたキッチン、居心地の良い自宅サロン", revLoc: "散らかったリビング、家計が火の車の台所",
+              upGoods: "高級な調味料セット、エプロン、上質な植物", revGoods: "使い古した掃除用具、雑然とした収納ボックス",
+              upHerb: "スイートオレンジ（生活に温かな豊かさと笑顔をもたらす）", revHerb: "ベチバー（物質への執着や不安を地面へ逃がす）" },
+            { file: "king", name: "ペンタクルのキング (King of Pentacles)", theme: "経済的成功・経営者・安定した富・社会的地位",
+              upMeaning: "財を成す、実業家としての成功、寛大な経済支援", revMeaning: "守銭奴、権威主義、金の亡者、経済的失脚",
+              upLoc: "本社の重役室、成功した企業の社長室", revLoc: "経営難に陥ったワンマン企業、欲に目がくらんだ場",
+              upGoods: "高級腕時計、重厚な金庫、企業のオーナー証明書", revGoods: "不渡り手形、欲の象徴となるブランド品",
+              upHerb: "シダーウッド（揺るぎない富と安定した基盤を作る）", revHerb: "サンダルウッド（お金や地位への執着心をリセットする）" }
+        ];
+
+        // Register Pentacles
+        pentacleCardsData.forEach(p => {
+            tarotCards.push({
+                id: cardIdCounter++,
+                name: p.name,
+                type: "minor",
+                suit: "pentacles",
+                image: `images/minor/pentacles/${p.file}.png`,
+                symbol: `ペンタクルのエネルギー (${p.theme})`,
+                meaningUp: p.upMeaning,
+                meaningRev: p.revMeaning,
+                locationUp: p.upLoc,
+                locationRev: p.revLoc,
+                goodsUp: p.upGoods,
+                goodsRev: p.revGoods,
+                herbUp: p.upHerb,
+                herbRev: p.herbRev
             });
         });
 
@@ -259,11 +595,15 @@
                 const baseCard = tarotCards[idx];
                 const isReversed = Math.random() < 0.25;
                 const positionLabel = getPositionLabel(currentSpread, i);
+                
                 return {
                     ...baseCard,
                     isReversed,
                     displayName: baseCard.name + (isReversed ? " (逆位置)" : ""),
-                    adjustedMeaning: isReversed ? "【逆位置】 " + baseCard.meaning + " (見直しや慎重なアプローチが必要)" : baseCard.meaning,
+                    adjustedMeaning: isReversed ? (baseCard.meaningRev || ("【逆位置】 " + (baseCard.meaningUp || "見直しや慎重なアプローチが必要"))) : (baseCard.meaningUp || "順調な進展"),
+                    adjustedLocation: isReversed ? (baseCard.locationRev || "落ち着かない部屋") : (baseCard.locationUp || "明るい作業スペース"),
+                    adjustedGoods: isReversed ? (baseCard.goodsRev || "使いにくいツール") : (baseCard.goodsUp || "便利な文房具"),
+                    adjustedHerb: isReversed ? (baseCard.herbRev || "リラックスハーブ") : (baseCard.herbUp || "アロマハーブ"),
                     positionLabel
                 };
             });
@@ -292,12 +632,12 @@
                     "1. 過去",
                     "2. 現在",
                     "3. 未来",
-                    "4. 顕在意識",
-                    "5. 潜在意識",
-                    "6. 障害",
+                    "4. 顕在意識 (現在の上)",
+                    "5. 潜在意識 (現在の下)",
+                    "6. 障害 (原因の左横)",
                     "7. 原因",
                     "8. 周囲の状況",
-                    "9. どうなりたいか",
+                    "9. 願望",
                     "10. 最終的な未来"
                 ]
             };
@@ -331,9 +671,9 @@
                     </div>
                 `;
             } else if (currentSpread === 'hexagram') {
-                // 六芒星レイアウト（1段目:現在 / 2段目:未来1,アドバイス,ランダム / 3段目:未来2,未来3 / 4段目:最終アドバイス）
+                // Hexagram layout (1:現在 / 2:未来1, 3:アドバイス, 4:ランダム / 5:未来2, 6:未来3 / 7:最終アドバイス)
                 html = `
-                    <div class="flex flex-col items-center gap-2 sm:gap-3 w-full py-2 relative scale-95 sm:scale-100">
+                    <div class="flex flex-col items-center gap-2 sm:gap-3 w-full py-2 relative scale-90 sm:scale-100">
                         <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                             <i class="fa-solid fa-star-of-life text-9xl text-purple-400"></i>
                         </div>
@@ -363,23 +703,23 @@
                     </div>
                 `;
             } else if (currentSpread === 'celtic') {
-                // ケルト十字レイアウト（10枚完全配置）
-                // 0:過去, 1:現在, 2:未来, 3:顕在意識(2の真上), 4:潜在意識(2の真下), 5:障害(6の左横), 6:原因, 7:周囲, 8:どうなりたいか, 9:最終的な未来
+                // Celtic Cross layout (10 cards exact requested positions)
+                // 0:過去, 1:現在, 2:未来, 3:顕在意識(1の上), 4:潜在意識(1の下), 5:障害(6の左), 6:原因, 7:周囲, 8:どうなりたいか, 9:最終的な未来
                 html = `
                     <div class="w-full flex flex-col items-center justify-center py-2 overflow-x-auto">
-                        <div class="min-w-[340px] sm:min-w-[420px] max-w-full flex flex-col gap-2 scale-90 sm:scale-100 origin-center">
+                        <div class="min-w-[340px] sm:min-w-[440px] max-w-full flex flex-col gap-2 scale-85 sm:scale-95 origin-center">
                             
-                            <!-- 1段目: 右端に【最終的な未来】 -->
+                            <!-- 1段目: 右端に【最終的な未来】(9) -->
                             <div class="grid grid-cols-10 gap-1 items-center">
                                 <div class="col-span-8"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[9], true)}</div>
                             </div>
 
-                            <!-- 2段目: 中央に【顕在意識】(3) / 右端に【どうなりたいか】(8) -->
+                            <!-- 2段目: 中央に【顕在意識】(3) [現在1の真上] / 右端に【どうなりたいか】(8) -->
                             <div class="grid grid-cols-10 gap-1 items-center">
-                                <div class="col-span-2"></div>
+                                <div class="col-span-3"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[3], true)}</div>
-                                <div class="col-span-4"></div>
+                                <div class="col-span-3"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[8], true)}</div>
                             </div>
 
@@ -392,11 +732,11 @@
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[7], true)}</div>
                             </div>
 
-                            <!-- 4段目: 中央に【潜在意識】(4) / 右に【原因】(6) -->
+                            <!-- 4段目: 中央に【潜在意識】(4) [現在1の真下] / 右に【原因】(6) -->
                             <div class="grid grid-cols-10 gap-1 items-center">
-                                <div class="col-span-2"></div>
+                                <div class="col-span-3"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[4], true)}</div>
-                                <div class="col-span-4"></div>
+                                <div class="col-span-3"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[6], true)}</div>
                             </div>
 
@@ -424,13 +764,13 @@
         function createCardHtml(card, isCompact = false) {
             const rotationStyle = card.isReversed ? 'transform: rotate(180deg);' : '';
             
-            // 縦長のカード画像が美しく収まるように高さを十分に確保 (h-28〜h-36)
+            // Expanded card image box to prevent clipping and ensure vertical tarot ratio
             const cardWidthClass = isCompact ? 'w-16 sm:w-20' : 'w-24 sm:w-28 md:w-32';
-            const imgHeightClass = isCompact ? 'h-24 sm:h-28' : 'h-32 sm:h-40 md:h-44';
+            const imgHeightClass = isCompact ? 'h-28 sm:h-36' : 'h-36 sm:h-48 md:h-52';
 
             const imgContent = `
                 <img src="${card.image}" 
-                     onerror="this.onerror=null; this.src='https://placehold.co/200x320/1e1b4b/c084fc?text=${encodeURIComponent(card.name.split(' ')[0])}';" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/200x340/1e1b4b/c084fc?text=${encodeURIComponent(card.name.split(' ')[0])}';" 
                      class="w-full ${imgHeightClass} object-cover rounded-lg border border-purple-400/40 bg-slate-950" 
                      alt="${card.name}">
             `;
@@ -478,15 +818,15 @@
                             </div>
                             <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
                                 <i class="fa-solid fa-location-dot text-indigo-400 mt-0.5 w-4 text-center"></i>
-                                <div><strong class="text-purple-300">場所:</strong> <span class="text-slate-300">${card.location}</span></div>
+                                <div><strong class="text-purple-300">場所:</strong> <span class="text-slate-300">${card.adjustedLocation}</span></div>
                             </div>
                             <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
                                 <i class="fa-solid fa-box-archive text-pink-400 mt-0.5 w-4 text-center"></i>
-                                <div><strong class="text-purple-300">雑貨や物:</strong> <span class="text-slate-300">${card.goods}</span></div>
+                                <div><strong class="text-purple-300">雑貨や物:</strong> <span class="text-slate-300">${card.adjustedGoods}</span></div>
                             </div>
                             <div class="flex items-start gap-2 bg-slate-900/50 p-2 rounded-xl border border-purple-500/10">
                                 <i class="fa-solid fa-seedling text-emerald-400 mt-0.5 w-4 text-center"></i>
-                                <div><strong class="text-purple-300">ハーブ: »</strong> <span class="text-slate-300">${card.herb}</span></div>
+                                <div><strong class="text-purple-300">ハーブ:</strong> <span class="text-slate-300">${card.adjustedHerb}</span></div>
                             </div>
                         </div>
                     </div>
