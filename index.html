@@ -620,13 +620,13 @@
                 four: ["1. 現状・問題（上）", "2. 原因（下左）", "3. 対策（下中）", "4. 結果（下右）"],
                 six: ["1. 上段左", "2. 上段中", "3. 上段右", "4. 下段左", "5. 下段中", "6. 下段右"],
                 hexagram: [
-                    "1段目: 現在",
-                    "2段目左: ランダム",
+                    "1段目: 現在の状況",
+                    "2段目左: 未来1",
                     "2段目中: アドバイス",
-                    "2段目右: 過程",
+                    "2段目右: ランダムな影響",
                     "3段目左: 未来2",
-                    "3段目右: 未来1",
-                    "4段目: アドバイス"
+                    "3段目右: 未来3",
+                    "4段目: 最終アドバイス"
                 ],
                 celtic: [
                     "1. 過去",
@@ -637,7 +637,7 @@
                     "6. 障害 (原因の左横)",
                     "7. 原因",
                     "8. 周囲の状況",
-                    "9. 願望",
+                    "9. どうなりたいか",
                     "10. 最終的な未来"
                 ]
             };
@@ -777,7 +777,6 @@
 
             return `
                 <div class="tarot-card bg-slate-950/90 border border-purple-500/30 rounded-xl p-1 sm:p-1.5 ${cardWidthClass} flex flex-col items-center shadow-lg animate-fadeIn">
-                    <div class="text-[8px] sm:text-[9px] font-bold text-amber-300 mb-0.5 text-center truncate w-full" title="${card.positionLabel}">${card.positionLabel}</div>
                     <div class="w-full mb-1 transition-transform duration-500" style="${rotationStyle}">
                         ${imgContent}
                     </div>
