@@ -634,7 +634,7 @@
                     "3. 未来",
                     "4. 顕在意識 (現在の上)",
                     "5. 潜在意識 (現在の下)",
-                    "6. 障害 (原因の左横)",
+                    "6. 障害 (潜在意識の左)",
                     "7. 原因",
                     "8. 周囲の状況",
                     "9. どうなりたいか",
@@ -732,19 +732,13 @@
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[7], true)}</div>
                             </div>
 
-                            <!-- 4段目: 中央に【潜在意識】(4) [現在1の真下] / 右に【原因】(6) -->
+                            <!-- 4段目: 左に【障害】(5) / 中央に【潜在意識】(4) [現在1の真下] / 右に【原因】(6) -->
                             <div class="grid grid-cols-10 gap-1 items-center">
-                                <div class="col-span-3"></div>
+                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[5], true)}</div>
+                                <div class="col-span-1"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[4], true)}</div>
                                 <div class="col-span-3"></div>
                                 <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[6], true)}</div>
-                            </div>
-
-                            <!-- 5段目: 【原因】の左横に【障害】(5) -->
-                            <div class="grid grid-cols-10 gap-1 items-center">
-                                <div class="col-span-6"></div>
-                                <div class="col-span-2 flex justify-center">${createCardHtml(currentDrawnCards[5], true)}</div>
-                                <div class="col-span-2"></div>
                             </div>
 
                         </div>
